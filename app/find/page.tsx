@@ -32,7 +32,7 @@ function TradeIcon({ trade }: { trade: string }) {
     case 'Plumber':
       return (
         <svg {...commonProps}>
-          <path d="M7 3h10v4a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V3Z" />
+          <path d="M8 3h8v4a4 4 0 0 1-8 0V3Z" />
           <path d="M8 11v7a4 4 0 0 0 8 0v-7" />
         </svg>
       );
@@ -40,17 +40,17 @@ function TradeIcon({ trade }: { trade: string }) {
       return (
         <svg {...commonProps}>
           <path d="M8 3h8" />
-          <path d="M9 3v5.5a2.5 2.5 0 0 0 2.5 2.5h1A2.5 2.5 0 0 0 15 8.5V3" />
+          <path d="M9 3v5.5A2.5 2.5 0 0 0 11.5 11h1A2.5 2.5 0 0 0 15 8.5V3" />
           <path d="M8 10h8v8a4 4 0 0 1-8 0v-8Z" />
         </svg>
       );
     case 'Builder':
       return (
         <svg {...commonProps}>
-          <rect x="4" y="5" width="16" height="14" rx="2" />
-          <path d="M8 5v14" />
-          <path d="M16 5v14" />
-          <path d="M4 10h16" />
+          <path d="M5 6h14v12H5z" />
+          <path d="M9 6v12" />
+          <path d="M15 6v12" />
+          <path d="M5 11h14" />
         </svg>
       );
     case 'Joiner':
@@ -65,7 +65,7 @@ function TradeIcon({ trade }: { trade: string }) {
       return (
         <svg {...commonProps}>
           <path d="M5 19h14" />
-          <path d="M7 19V8.5a2.5 2.5 0 0 1 5 0V12" />
+          <path d="M7 19V8.5A2.5 2.5 0 0 1 12 6a2.5 2.5 0 0 1 0 5V12" />
           <path d="M12 12h5v7" />
         </svg>
       );
@@ -134,7 +134,7 @@ export default function FindPage() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f8fafc] text-[#0A1628] transition group-hover:bg-[#0A1628] group-hover:text-white sm:h-14 sm:w-14">
                     <TradeIcon trade={trade} />
                   </div>
-                  <div className="mt-3 text-sm font-semibold text-text">{trade}</div>
+                  <div className="mt-3 text-sm font-semibold text-text transition group-hover:text-[#0A1628]">{trade}</div>
                 </Link>
               );
             })}

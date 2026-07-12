@@ -102,10 +102,9 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl gap-8 px-4 md:grid-cols-2">
           <div className="rounded-2xl bg-white p-8 shadow-md">
             <div className="flex items-start gap-4">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#0071e3]">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.5" className="shrink-0">
+                <circle cx="11" cy="11" r="5.5" />
+                <path d="m15 15 4 4" />
               </svg>
               <div>
                 <h3 className="text-2xl font-bold">Find a tradesperson</h3>
@@ -119,10 +118,10 @@ export default function Home() {
 
           <div className="rounded-2xl bg-white p-8 shadow-md">
             <div className="flex items-start gap-4">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#0A1628]">
-                <path d="M12 2v4" />
-                <path d="M19 7h-14" />
-                <path d="M6 21h12" />
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.5" className="shrink-0">
+                <path d="M5 8.5A2.5 2.5 0 0 1 7.5 6h9A2.5 2.5 0 0 1 19 8.5v8A2.5 2.5 0 0 1 16.5 19h-9A2.5 2.5 0 0 1 5 16.5v-8Z" />
+                <path d="M8 6V4.5A1.5 1.5 0 0 1 9.5 3h5A1.5 1.5 0 0 1 16 4.5V6" />
+                <path d="M8 12h8" />
               </svg>
               <div>
                 <h3 className="text-2xl font-bold">Manage your business</h3>

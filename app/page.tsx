@@ -127,9 +127,9 @@ export default function Home() {
               <div>
                 <h3 className="text-2xl font-bold">Manage your business</h3>
                 <p className="mt-2 text-text-secondary">Create a profile, get enquiries from homeowners, and manage jobs all in one place.</p>
-                <div className="mt-4 flex gap-3">
-                  <Link href="/auth/signup" className="inline-flex items-center rounded-full bg-[#0071e3] px-5 py-2 font-semibold text-white">Get started free</Link>
-                  <Link href="/auth/signin" className="inline-flex items-center rounded-full border border-[#0071e3] px-5 py-2 font-semibold text-[#0071e3]">Sign in</Link>
+                <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">
+                  <Link href="/auth/signup" className="inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#0071e3] px-4 py-2 text-sm font-semibold text-white sm:px-5">Get started free</Link>
+                  <Link href="/auth/signin" className="inline-flex min-h-[40px] items-center justify-center rounded-full border border-[#0071e3] px-4 py-2 text-sm font-semibold text-[#0071e3] sm:px-5">Sign in</Link>
                 </div>
               </div>
             </div>
@@ -139,27 +139,30 @@ export default function Home() {
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <h3 className="mb-8 text-center text-2xl font-bold">Why TradeTrust</h3>
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-3 text-[#0A1628]">
-              <path d="M12 2l3 7h7l-5.5 4 2 7L12 17l-6.5 3 2-7L2 9h7z" />
+        <div className="grid gap-5 md:grid-cols-3 md:gap-6">
+          <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-7">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.8" className="mx-auto mb-4">
+              <path d="M12 3l7 3v5c0 4.2-2.7 7.7-7 9-4.3-1.3-7-4.8-7-9V6l7-3Z" />
+              <path d="m9.5 12 1.7 1.7 3.3-3.4" />
             </svg>
             <h4 className="font-semibold">Verified profiles</h4>
             <p className="mt-2 text-sm text-text-secondary">All tradespeople are real and vetted</p>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-3 text-[#0A1628]">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a7 7 0 0 0 0-6" />
+          <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-7">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.8" className="mx-auto mb-4">
+              <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H10l-4 3v-3H7.5A2.5 2.5 0 0 1 5 13.5v-7Z" />
+              <path d="m8.5 8.5 1.3 1.3 2.7-2.7" />
             </svg>
             <h4 className="font-semibold">Real reviews</h4>
             <p className="mt-2 text-sm text-text-secondary">Genuine feedback from real customers</p>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-3 text-[#0A1628]">
-              <path d="M12 2a10 10 0 1 0 0 20" />
+          <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-7">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.8" className="mx-auto mb-4">
+              <circle cx="12" cy="12" r="8" />
+              <path d="M12 7.2v9.6" />
+              <path d="M9.2 10.2h5.6" />
             </svg>
             <h4 className="font-semibold">No commission</h4>
             <p className="mt-2 text-sm text-text-secondary">We keep things simple and fair</p>

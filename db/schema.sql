@@ -35,7 +35,7 @@ create type job_status as enum ('pending', 'active', 'done');
 create table jobs (
   id uuid primary key default uuid_generate_v4(),
   tradesperson_id uuid references auth.users(id) not null,
-  client_id uuid references clients(id) not null,
+  client_id uuid references clients(id) on delete cascade not null,
   title text not null,
   description text not null,
   status job_status not null default 'pending',

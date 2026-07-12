@@ -130,6 +130,7 @@ export default function DashboardPage() {
   const [enquiryLoading, setEnquiryLoading] = useState(false);
   const [clientLoading, setClientLoading] = useState(false);
   const [jobLoading, setJobLoading] = useState(false);
+  const [deletingClientId, setDeletingClientId] = useState<string | null>(null);
   const [clientError, setClientError] = useState<string | null>(null);
   const [jobError, setJobError] = useState<string | null>(null);
   const [showAddClient, setShowAddClient] = useState(false);
@@ -418,6 +419,48 @@ export default function DashboardPage() {
     await fetchClients();
   };
 
+  const handleDeleteClient = async (clientId: string) => {
+    if (!session) return;
+
+    const confirmed = window.confirm('Delete this client and all jobs linked to them?');
+    if (!confirmed) return;
+
+    setDeletingClientId(clientId);
+    setClientError(null);
+    setJobError(null);
+
+    const { error: jobsError } = await supabase.from('jobs').delete().eq('client_id', clientId);
+    if (jobsError) {
+      setClientError(jobsError.message);
+      setDeletingClientId(null);
+      return;
+    }
+
+    const { error: clientError } = await supabase.from('clients').delete().eq('id', clientId);
+    if (clientError) {
+      setClientError(clientError.message);
+      setDeletingClientId(null);
+      return;
+    }
+
+    setClients((prev) => prev.filter((client) => client.id !== clientId));
+    setJobs((prev) => prev.filter((job) => job.client_id !== clientId));
+    setNewJob((prev) => {
+      const remainingClients = clients.filter((client) => client.id !== clientId);
+      if (!prev.client_id || prev.client_id !== clientId) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        client_id: remainingClients[0]?.id || '',
+      };
+    });
+
+    setDeletingClientId(null);
+    await Promise.all([fetchClients(), fetchJobs()]);
+  };
+
   const handleJobSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!session) return;
@@ -577,10 +620,22 @@ export default function DashboardPage() {
             <div className="mt-6 grid gap-4">
               {clients.map((client) => (
                 <div key={client.id} className="rounded-[24px] border border-border bg-[#fcfcfc] p-5">
-                  <p className="font-semibold text-text">{client.name}</p>
-                  <p className="mt-2 text-sm text-muted">{client.phone}</p>
-                  <p className="text-sm text-muted">{client.email || 'No email provided'}</p>
-                  <p className="text-sm text-muted">{client.address}</p>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-semibold text-text">{client.name}</p>
+                      <p className="mt-2 text-sm text-muted">{client.phone}</p>
+                      <p className="text-sm text-muted">{client.email || 'No email provided'}</p>
+                      <p className="text-sm text-muted">{client.address}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteClient(client.id)}
+                      disabled={deletingClientId === client.id}
+                      className="rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {deletingClientId === client.id ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

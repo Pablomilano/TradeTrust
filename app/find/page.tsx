@@ -11,16 +11,82 @@ const TRADES = [
   'General Maintenance',
 ];
 
-const PHOTO_URLS: Record<string, string> = {
-  Electrician: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1200&q=80',
-  Plumber: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=1200&q=80',
-  'Gas Engineer': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80',
-  Builder: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80',
-  Joiner: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1200&q=80',
-  Plasterer: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200&q=80',
-  'Painter & Decorator': 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1200&q=80',
-  'General Maintenance': 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&q=80',
-};
+function TradeIcon({ trade }: { trade: string }) {
+  const commonProps = {
+    width: 40,
+    height: 40,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.5,
+    className: 'h-10 w-10',
+  };
+
+  switch (trade) {
+    case 'Electrician':
+      return (
+        <svg {...commonProps}>
+          <path d="m13 2-7 10h4l-1 10 8-12h-4l2-8Z" />
+        </svg>
+      );
+    case 'Plumber':
+      return (
+        <svg {...commonProps}>
+          <path d="M7 3h10v4a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V3Z" />
+          <path d="M8 11v7a4 4 0 0 0 8 0v-7" />
+        </svg>
+      );
+    case 'Gas Engineer':
+      return (
+        <svg {...commonProps}>
+          <path d="M8 3h8" />
+          <path d="M9 3v5.5a2.5 2.5 0 0 0 2.5 2.5h1A2.5 2.5 0 0 0 15 8.5V3" />
+          <path d="M8 10h8v8a4 4 0 0 1-8 0v-8Z" />
+        </svg>
+      );
+    case 'Builder':
+      return (
+        <svg {...commonProps}>
+          <rect x="4" y="5" width="16" height="14" rx="2" />
+          <path d="M8 5v14" />
+          <path d="M16 5v14" />
+          <path d="M4 10h16" />
+        </svg>
+      );
+    case 'Joiner':
+      return (
+        <svg {...commonProps}>
+          <path d="M5 18h14" />
+          <path d="m7 18 7-12 3 4-7 8" />
+          <path d="M10 8h4" />
+        </svg>
+      );
+    case 'Plasterer':
+      return (
+        <svg {...commonProps}>
+          <path d="M5 19h14" />
+          <path d="M7 19V8.5a2.5 2.5 0 0 1 5 0V12" />
+          <path d="M12 12h5v7" />
+        </svg>
+      );
+    case 'Painter & Decorator':
+      return (
+        <svg {...commonProps}>
+          <path d="M6 4h10" />
+          <path d="M8 4v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4" />
+          <path d="M8 10h8v5a4 4 0 0 1-8 0v-5Z" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...commonProps}>
+          <path d="M12 3v18" />
+          <path d="M3 12h18" />
+          <circle cx="12" cy="12" r="8" />
+        </svg>
+      );
+  }
+}
 
 function slugifyTrade(trade: string) {
   return trade
@@ -41,29 +107,43 @@ export default function FindPage() {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="space-y-6">
-          {TRADES.map((trade) => {
-            const imageUrl = PHOTO_URLS[trade] || '';
-            const firstWord = trade === 'Painter & Decorator' ? 'Painter' : trade.split(' ')[0];
+        <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm sm:p-6">
+          <div className="rounded-2xl border border-[#e5e7eb] bg-[#f8fafc] p-3 sm:p-4">
+            <label htmlFor="trade-search" className="mb-2 block text-sm font-semibold text-text">Postcode or town</label>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <input
+                id="trade-search"
+                type="search"
+                placeholder="Enter postcode or town"
+                className="w-full rounded-xl border border-[#e5e7eb] bg-white px-4 py-3 text-sm text-text outline-none ring-0"
+              />
+              <button className="rounded-xl bg-[#0A1628] px-4 py-3 text-sm font-semibold text-white">Search</button>
+            </div>
+          </div>
 
-            return (
-              <div key={trade} className="relative w-full h-56 overflow-hidden rounded-2xl shadow-sm">
-                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/20" />
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+            {TRADES.map((trade) => {
+              const firstWord = trade === 'Painter & Decorator' ? 'Painter' : trade.split(' ')[0];
 
-                <div className="relative z-10 h-full flex items-end px-6 pb-6">
-                  <div className="flex-1">
-                    <div className="text-white font-bold text-2xl md:text-3xl drop-shadow-md">{trade}</div>
+              return (
+                <Link
+                  key={trade}
+                  href={`/find/${slugifyTrade(trade)}`}
+                  className="group flex aspect-square flex-col items-center justify-center rounded-2xl border border-[#e5e7eb] bg-white p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f8fafc] text-[#0A1628] transition group-hover:bg-[#0A1628] group-hover:text-white sm:h-14 sm:w-14">
+                    <TradeIcon trade={trade} />
                   </div>
-                  <div>
-                    <Link href={`/find/${slugifyTrade(trade)}`} className="bg-white text-[#0A1628] rounded-full px-5 py-2 font-semibold inline-flex">
-                      {`Find ${firstWord} →`}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                  <div className="mt-3 text-sm font-semibold text-text">{trade}</div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm sm:p-6">
+          <h2 className="text-xl font-semibold text-text">Results</h2>
+          <p className="mt-2 text-sm text-text-secondary">Choose a trade above to browse nearby professionals.</p>
         </div>
       </div>
     </div>

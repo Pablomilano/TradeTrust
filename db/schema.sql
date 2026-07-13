@@ -62,6 +62,7 @@ create table profiles (
   bio text,
   accreditations text[] not null default ARRAY[]::text[],
   phone text,
+  photo_url text,
   visibility boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

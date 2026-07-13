@@ -12,7 +12,7 @@ const TRADES = [
 ];
 
 function TradeIcon({ trade }: { trade: string }) {
-  const commonProps = {
+  const electricianProps = {
     width: 40,
     height: 40,
     viewBox: '0 0 24 24',
@@ -22,67 +22,90 @@ function TradeIcon({ trade }: { trade: string }) {
     className: 'h-10 w-10',
   };
 
+  const tradeProps = {
+    width: 40,
+    height: 40,
+    viewBox: '0 0 40 40',
+    fill: 'none',
+    stroke: '#0A1628',
+    strokeWidth: 1.5,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    className: 'h-10 w-10',
+  };
+
   switch (trade) {
     case 'Electrician':
       return (
-        <svg {...commonProps}>
+        <svg {...electricianProps}>
           <path d="m13 2-7 10h4l-1 10 8-12h-4l2-8Z" />
         </svg>
       );
     case 'Plumber':
       return (
-        <svg {...commonProps}>
-          <path d="M8 3h8v4a4 4 0 0 1-8 0V3Z" />
-          <path d="M8 11v7a4 4 0 0 0 8 0v-7" />
+        <svg {...tradeProps}>
+          <path d="M10 14V11a3 3 0 0 1 3-3h8" />
+          <path d="M21 8v5" />
+          <path d="M18 11h6" />
+          <path d="M24 11v3a4 4 0 0 1-4 4h-6" />
+          <path d="M14 18v5a4 4 0 0 0 8 0v-5" />
         </svg>
       );
     case 'Gas Engineer':
       return (
-        <svg {...commonProps}>
-          <path d="M8 3h8" />
-          <path d="M9 3v5.5A2.5 2.5 0 0 0 11.5 11h1A2.5 2.5 0 0 0 15 8.5V3" />
-          <path d="M8 10h8v8a4 4 0 0 1-8 0v-8Z" />
+        <svg {...tradeProps}>
+          <path d="M20 7c-4 4-7 7-7 12a7 7 0 0 0 14 0c0-4-2-7-7-12Z" />
+          <path d="M20 12c-2 2-3.5 4-3.5 6.5A3.5 3.5 0 0 0 20 22a3.5 3.5 0 0 0 3.5-3.5c0-2-1-3.5-3.5-6.5Z" />
         </svg>
       );
     case 'Builder':
       return (
-        <svg {...commonProps}>
-          <path d="M5 6h14v12H5z" />
-          <path d="M9 6v12" />
-          <path d="M15 6v12" />
-          <path d="M5 11h14" />
+        <svg {...tradeProps}>
+          <path d="M12 20a8 8 0 0 1 16 0" />
+          <path d="M10 20h20" />
+          <path d="M14 20v-5a6 6 0 0 1 12 0v5" />
+          <path d="M10 20v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-4" />
         </svg>
       );
     case 'Joiner':
       return (
-        <svg {...commonProps}>
-          <path d="M5 18h14" />
-          <path d="m7 18 7-12 3 4-7 8" />
-          <path d="M10 8h4" />
+        <svg {...tradeProps}>
+          <path d="M9 15h18v8H9z" />
+          <path d="M27 15v8" />
+          <path d="M11 23l1 2 1-2 1 2 1-2 1 2 1-2 1 2 1-2 1 2 1-2" />
+          <path d="M14 15V11" />
         </svg>
       );
     case 'Plasterer':
       return (
-        <svg {...commonProps}>
-          <path d="M5 19h14" />
-          <path d="M7 19V8.5A2.5 2.5 0 0 1 12 6a2.5 2.5 0 0 1 0 5V12" />
-          <path d="M12 12h5v7" />
+        <svg {...tradeProps}>
+          <path d="M17 9l9 9-7 7-9-9 7-7Z" />
+          <path d="M12 18l10 10" />
+          <path d="M23 13l4-4" />
+          <path d="M12 18l-4 4" />
         </svg>
       );
     case 'Painter & Decorator':
       return (
-        <svg {...commonProps}>
-          <path d="M6 4h10" />
-          <path d="M8 4v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4" />
-          <path d="M8 10h8v5a4 4 0 0 1-8 0v-5Z" />
+        <svg {...tradeProps}>
+          <path d="M12 14h9a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-9" />
+          <path d="M21 14v8" />
+          <path d="M12 17h-2a5 5 0 0 0 0 10h3" />
+          <path d="M10 27l-2 5" />
+        </svg>
+      );
+    case 'General Maintenance':
+      return (
+        <svg {...tradeProps}>
+          <path d="M27 13a7 7 0 0 0-9 9l-9 9 3 3 9-9a7 7 0 0 0 9-9l-4 4-3-1-1-3 5-3Z" />
+          <path d="M19 21l6 6" />
         </svg>
       );
     default:
       return (
-        <svg {...commonProps}>
-          <path d="M12 3v18" />
-          <path d="M3 12h18" />
-          <circle cx="12" cy="12" r="8" />
+        <svg {...tradeProps}>
+          <path d="M27 13a7 7 0 0 0-9 9l-9 9 3 3 9-9a7 7 0 0 0 9-9l-4 4-3-1-1-3 5-3Z" />
+          <path d="M19 21l6 6" />
         </svg>
       );
   }

@@ -104,7 +104,7 @@ create policy "Tradesperson can delete own enquiries" on enquiries for delete us
 create table reviews (
   id uuid primary key default uuid_generate_v4(),
   profile_id uuid references profiles(id) not null,
-  job_id uuid references jobs(id) not null,
+  job_id uuid references jobs(id),
   reviewer_name text not null,
   rating smallint not null check (rating >= 1 and rating <= 5),
   comment text not null,
@@ -113,9 +113,9 @@ create table reviews (
 
 alter table reviews enable row level security;
 create policy "Public can read reviews" on reviews for select using (true);
-create policy "Tradesperson can insert reviews" on reviews for insert with check (true);
-create policy "Tradesperson can update reviews" on reviews for update using (false) with check (false);
-create policy "Tradesperson can delete reviews" on reviews for delete using (false);
+create policy "Public can insert reviews" on reviews for insert with check (true);
+create policy "No review updates" on reviews for update using (false) with check (false);
+create policy "No review deletes" on reviews for delete using (false);
 
 create type subscription_status as enum ('active', 'past_due', 'canceled', 'trialing');
 

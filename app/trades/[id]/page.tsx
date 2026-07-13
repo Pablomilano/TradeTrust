@@ -22,6 +22,14 @@ interface Profile {
   accreditations: string[];
 }
 
+interface Review {
+  id: string;
+  reviewer_name: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
 interface EnquiryForm {
   homeowner_name: string;
   phone: string;
@@ -40,6 +48,7 @@ export default function TradePage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const [form, setForm] = useState<EnquiryForm>({
     homeowner_name: '',
@@ -76,6 +85,26 @@ export default function TradePage() {
     if (profileId) {
       fetchProfile();
     }
+  }, [profileId]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!profileId) return;
+
+      const { data, error: reviewsError } = await supabase
+        .from('reviews')
+        .select('id, reviewer_name, rating, comment, created_at')
+        .eq('profile_id', profileId)
+        .order('created_at', { ascending: false });
+
+      if (reviewsError) {
+        setReviews([]);
+      } else {
+        setReviews((data as Review[]) || []);
+      }
+    };
+
+    fetchReviews();
   }, [profileId]);
 
   const handleInputChange = (
@@ -156,6 +185,9 @@ export default function TradePage() {
     profile.first_name || profile.last_name
       ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
       : 'Tradesperson';
+  const reviewAverage = reviews.length > 0
+    ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+    : null;
 
   const digitsOnlyPhone = profile.phone ? profile.phone.replace(/\D/g, '') : '';
   const whatsappPhone = digitsOnlyPhone
@@ -233,6 +265,31 @@ export default function TradePage() {
                 </div>
               </div>
             )}
+
+            <div className="mb-6">
+              <h2 className="font-semibold text-text mb-2">Reviews</h2>
+              <p className="mb-3 text-sm text-text-secondary">
+                {reviews.length > 0
+                  ? `${reviewAverage} / 5 from ${reviews.length} review${reviews.length === 1 ? '' : 's'}`
+                  : 'No reviews yet'}
+              </p>
+              {reviews.length > 0 && (
+                <div className="space-y-3">
+                  {reviews.slice(0, 6).map((review) => (
+                    <article key={review.id} className="rounded-xl border border-border bg-white p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-semibold text-text">{review.reviewer_name}</p>
+                        <p className="text-sm text-amber-500">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</p>
+                      </div>
+                      <p className="mt-2 text-sm text-text-secondary">{review.comment}</p>
+                      <p className="mt-2 text-xs text-text-secondary">
+                        {new Date(review.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Enquiry Form */}

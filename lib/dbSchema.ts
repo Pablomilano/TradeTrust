@@ -40,7 +40,9 @@ export interface Job {
 
 export interface Review {
   id: string;
-  job_id: string;
+  profile_id: string;
+  job_id?: string | null;
+  reviewer_name: string;
   rating: number;
   comment: string;
   created_at: string;

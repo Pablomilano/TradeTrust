@@ -134,6 +134,7 @@ export default function DashboardPage() {
   const [clientError, setClientError] = useState<string | null>(null);
   const [jobError, setJobError] = useState<string | null>(null);
   const [showAddClient, setShowAddClient] = useState(false);
+  const [reviewLinkMessage, setReviewLinkMessage] = useState<string | null>(null);
   const [newClient, setNewClient] = useState({ name: '', phone: '', email: '', address: '' });
   const [newJob, setNewJob] = useState({ title: '', description: '', client_id: '', status: 'pending' as JobStatus });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -415,6 +416,23 @@ export default function DashboardPage() {
     event.target.value = '';
   };
 
+  const handleCopyReviewLink = async () => {
+    if (!profile?.id) {
+      setReviewLinkMessage('Save your profile first to generate a review link.');
+      return;
+    }
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const reviewUrl = `${origin}/review/${profile.id}`;
+
+    try {
+      await navigator.clipboard.writeText(reviewUrl);
+      setReviewLinkMessage('Review link copied. Share it on WhatsApp after each job.');
+    } catch {
+      setReviewLinkMessage('Could not copy automatically. Please copy from your browser address bar.');
+    }
+  };
+
   const handleClientSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!session) return;
@@ -676,6 +694,19 @@ export default function DashboardPage() {
           <div className="mt-5 rounded-3xl bg-[#f8f8fa] p-4 text-sm text-text">
             <p className="font-semibold">Completion: {profileCompletion()}%</p>
             <p className="text-muted">Fill in your profile so homeowners can find you. Public visibility is off until you're ready.</p>
+          </div>
+
+          <div className="mt-4 rounded-3xl border border-border bg-white p-4">
+            <p className="text-sm font-semibold text-text">Collect reviews faster</p>
+            <p className="mt-1 text-sm text-muted">Share your private review page link with clients once a job is done.</p>
+            <button
+              type="button"
+              onClick={handleCopyReviewLink}
+              className="mt-3 inline-flex items-center justify-center rounded-full bg-[#0A1628] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-95"
+            >
+              Share review link
+            </button>
+            {reviewLinkMessage && <p className="mt-2 text-xs text-muted">{reviewLinkMessage}</p>}
           </div>
 
           <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-dashed border-border bg-[#fafafa] p-4 sm:flex-row sm:items-center">

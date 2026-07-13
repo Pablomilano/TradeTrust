@@ -5,7 +5,6 @@ import {
   HomeModernIcon,
   CubeIcon,
   PaintBrushIcon,
-  SwatchIcon,
   WrenchIcon,
 } from '@heroicons/react/24/outline';
 
@@ -37,9 +36,13 @@ function TradeIcon({ trade }: { trade: string }) {
     case 'Joiner':
       return <CubeIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Plasterer':
-      return <PaintBrushIcon className="h-10 w-10 text-[#0A1628]" />;
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-[#0A1628]">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l4-4 10-10 3 3L10 16 6 20l-3-3zm4-4l3 3" />
+        </svg>
+      );
     case 'Painter & Decorator':
-      return <SwatchIcon className="h-10 w-10 text-[#0A1628]" />;
+      return <PaintBrushIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'General Maintenance':
       return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
     default:

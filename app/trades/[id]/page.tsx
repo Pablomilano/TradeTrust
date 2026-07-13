@@ -157,6 +157,16 @@ export default function TradePage() {
       ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
       : 'Tradesperson';
 
+  const digitsOnlyPhone = profile.phone ? profile.phone.replace(/\D/g, '') : '';
+  const whatsappPhone = digitsOnlyPhone
+    ? digitsOnlyPhone.startsWith('44')
+      ? digitsOnlyPhone
+      : `44${digitsOnlyPhone.replace(/^0/, '')}`
+    : '';
+  const whatsappHref = whatsappPhone
+    ? `https://wa.me/${whatsappPhone}?text=${encodeURIComponent("Hi, I found you on TradeTrust and I'd like to get a quote.")}`
+    : '';
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -228,7 +238,46 @@ export default function TradePage() {
           {/* Enquiry Form */}
           <div className="md:col-span-1">
             <div className="rounded-lg border border-border bg-[#fbfbfb] p-6 sticky top-4">
-              <h3 className="font-semibold text-text mb-4">Send Enquiry</h3>
+              {whatsappHref && (
+                <div className="mb-5">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                    Quick contact
+                  </p>
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 32 32"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M16 3.2c-6.96 0-12.6 5.52-12.6 12.34 0 2.4.7 4.64 1.92 6.54L3.2 28.8l6.96-2.04a12.75 12.75 0 0 0 5.84 1.4c6.96 0 12.6-5.52 12.6-12.34C28.6 8.72 22.96 3.2 16 3.2Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M22 19.4c-.28.78-1.58 1.42-2.2 1.52-.56.1-1.28.14-2.08-.1-.48-.14-1.1-.36-1.9-.7-3.34-1.44-5.52-4.8-5.68-5.02-.16-.22-1.34-1.76-1.34-3.36 0-1.6.86-2.38 1.16-2.7.3-.32.66-.4.88-.4h.62c.2 0 .46-.08.72.56.28.68.94 2.34 1.02 2.52.08.18.14.4.02.64-.12.24-.18.4-.36.62-.18.22-.38.48-.54.64-.18.18-.38.38-.16.74.22.36.98 1.6 2.1 2.58 1.44 1.24 2.66 1.62 3.02 1.8.36.18.56.16.76-.1.2-.26.88-1.02 1.12-1.38.24-.36.48-.3.82-.18.34.12 2.12.98 2.48 1.16.36.18.6.26.68.4.08.14.08.82-.2 1.6Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>💬 Message on WhatsApp</span>
+                  </a>
+                </div>
+              )}
+
+              <h3 className="font-semibold text-text mb-4">Or send an enquiry</h3>
 
               {submitSuccess && (
                 <div className="mb-4 rounded-lg bg-green-50 border border-green-200 p-3 text-sm text-green-800">

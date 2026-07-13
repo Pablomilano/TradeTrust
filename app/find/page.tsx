@@ -1,4 +1,14 @@
 import Link from 'next/link';
+import {
+  BoltIcon,
+  BeakerIcon,
+  FireIcon,
+  HomeModernIcon,
+  WrenchScrewdriverIcon,
+  PaintBrushIcon,
+  SwatchIcon,
+  WrenchIcon,
+} from '@heroicons/react/24/outline';
 
 const TRADES = [
   'Electrician',
@@ -12,102 +22,25 @@ const TRADES = [
 ];
 
 function TradeIcon({ trade }: { trade: string }) {
-  const electricianProps = {
-    width: 40,
-    height: 40,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.5,
-    className: 'h-10 w-10',
-  };
-
-  const tradeProps = {
-    width: 40,
-    height: 40,
-    viewBox: '0 0 40 40',
-    fill: 'none',
-    stroke: '#0A1628',
-    strokeWidth: 1.5,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-    className: 'h-10 w-10',
-  };
-
   switch (trade) {
     case 'Electrician':
-      return (
-        <svg {...electricianProps}>
-          <path d="m13 2-7 10h4l-1 10 8-12h-4l2-8Z" />
-        </svg>
-      );
+      return <BoltIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Plumber':
-      return (
-        <svg {...tradeProps}>
-          <path d="M10 14V11a3 3 0 0 1 3-3h8" />
-          <path d="M21 8v5" />
-          <path d="M18 11h6" />
-          <path d="M24 11v3a4 4 0 0 1-4 4h-6" />
-          <path d="M14 18v5a4 4 0 0 0 8 0v-5" />
-        </svg>
-      );
+      return <BeakerIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Gas Engineer':
-      return (
-        <svg {...tradeProps}>
-          <path d="M20 7c-4 4-7 7-7 12a7 7 0 0 0 14 0c0-4-2-7-7-12Z" />
-          <path d="M20 12c-2 2-3.5 4-3.5 6.5A3.5 3.5 0 0 0 20 22a3.5 3.5 0 0 0 3.5-3.5c0-2-1-3.5-3.5-6.5Z" />
-        </svg>
-      );
+      return <FireIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Builder':
-      return (
-        <svg {...tradeProps}>
-          <path d="M12 20a8 8 0 0 1 16 0" />
-          <path d="M10 20h20" />
-          <path d="M14 20v-5a6 6 0 0 1 12 0v5" />
-          <path d="M10 20v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-4" />
-        </svg>
-      );
+      return <HomeModernIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Joiner':
-      return (
-        <svg {...tradeProps}>
-          <path d="M9 15h18v8H9z" />
-          <path d="M27 15v8" />
-          <path d="M11 23l1 2 1-2 1 2 1-2 1 2 1-2 1 2 1-2 1 2 1-2" />
-          <path d="M14 15V11" />
-        </svg>
-      );
+      return <WrenchScrewdriverIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Plasterer':
-      return (
-        <svg {...tradeProps}>
-          <path d="M17 9l9 9-7 7-9-9 7-7Z" />
-          <path d="M12 18l10 10" />
-          <path d="M23 13l4-4" />
-          <path d="M12 18l-4 4" />
-        </svg>
-      );
+      return <PaintBrushIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Painter & Decorator':
-      return (
-        <svg {...tradeProps}>
-          <path d="M12 14h9a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-9" />
-          <path d="M21 14v8" />
-          <path d="M12 17h-2a5 5 0 0 0 0 10h3" />
-          <path d="M10 27l-2 5" />
-        </svg>
-      );
+      return <SwatchIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'General Maintenance':
-      return (
-        <svg {...tradeProps}>
-          <path d="M27 13a7 7 0 0 0-9 9l-9 9 3 3 9-9a7 7 0 0 0 9-9l-4 4-3-1-1-3 5-3Z" />
-          <path d="M19 21l6 6" />
-        </svg>
-      );
+      return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
     default:
-      return (
-        <svg {...tradeProps}>
-          <path d="M27 13a7 7 0 0 0-9 9l-9 9 3 3 9-9a7 7 0 0 0 9-9l-4 4-3-1-1-3 5-3Z" />
-          <path d="M19 21l6 6" />
-        </svg>
-      );
+      return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
   }
 }
 

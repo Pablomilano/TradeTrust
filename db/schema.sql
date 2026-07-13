@@ -111,6 +111,8 @@ create table reviews (
   created_at timestamptz not null default now()
 );
 
+alter table reviews drop column if exists review_text;
+
 alter table reviews enable row level security;
 create policy "Public can read reviews" on reviews for select using (true);
 create policy "Public can insert reviews" on reviews for insert with check (true);

@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import {
   BoltIcon,
-  BeakerIcon,
   FireIcon,
   HomeModernIcon,
-  WrenchScrewdriverIcon,
+  CubeIcon,
   PaintBrushIcon,
   SwatchIcon,
   WrenchIcon,
@@ -26,13 +25,17 @@ function TradeIcon({ trade }: { trade: string }) {
     case 'Electrician':
       return <BoltIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Plumber':
-      return <BeakerIcon className="h-10 w-10 text-[#0A1628]" />;
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-[#0A1628]">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c0 0-6 6.5-6 10a6 6 0 0 0 12 0c0-3.5-6-10-6-10z" />
+        </svg>
+      );
     case 'Gas Engineer':
       return <FireIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Builder':
       return <HomeModernIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Joiner':
-      return <WrenchScrewdriverIcon className="h-10 w-10 text-[#0A1628]" />;
+      return <CubeIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Plasterer':
       return <PaintBrushIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'Painter & Decorator':

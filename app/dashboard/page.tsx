@@ -283,7 +283,6 @@ export default function DashboardPage() {
     setProfileMessage(null);
 
     const values = {
-      user_id: session.user.id,
       first_name: profileForm.first_name || null,
       last_name: profileForm.last_name || null,
       business_name: profileForm.business_name || null,
@@ -297,30 +296,53 @@ export default function DashboardPage() {
       photo_url: photoUrl || null,
     };
 
-    const { data, error } = await supabase
+    // Check if profile exists
+    const { data: existingProfile, error: fetchError } = await supabase
       .from('profiles')
-      .upsert([values], { onConflict: 'user_id' })
-      .select('*');
+      .select('id')
+      .eq('user_id', session.user.id)
+      .single();
+
+    let result;
+    
+    if (existingProfile) {
+      // Profile exists, update it
+      result = await supabase
+        .from('profiles')
+        .update(values)
+        .eq('user_id', session.user.id)
+        .select('*')
+        .single();
+    } else {
+      // Profile doesn't exist, insert it
+      result = await supabase
+        .from('profiles')
+        .insert([{ ...values, user_id: session.user.id }])
+        .select('*')
+        .single();
+    }
+
+    const { data, error } = result;
 
     if (error) {
       setProfileError(error.message);
       setProfileMessage(null);
-    } else if (data && data[0]) {
-      setProfile(data[0]);
-      setPhotoUrl(data[0].photo_url || null);
+    } else if (data) {
+      setProfile(data);
+      setPhotoUrl(data.photo_url || null);
       setProfileMessage('Profile saved successfully.');
       setProfileForm({
-        first_name: data[0].first_name || '',
-        last_name: data[0].last_name || '',
-        business_name: data[0].business_name || '',
-        trade: data[0].trade,
-        coverage_area: data[0].coverage_area || '',
-        coverage_radius: data[0].coverage_radius || 10,
-        bio: data[0].bio || '',
-        accreditations: data[0].accreditations || [],
-        phone: data[0].phone || '',
-        visibility: data[0].visibility,
-        photo_url: data[0].photo_url || null,
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        business_name: data.business_name || '',
+        trade: data.trade,
+        coverage_area: data.coverage_area || '',
+        coverage_radius: data.coverage_radius || 10,
+        bio: data.bio || '',
+        accreditations: data.accreditations || [],
+        phone: data.phone || '',
+        visibility: data.visibility,
+        photo_url: data.photo_url || null,
       });
     }
 

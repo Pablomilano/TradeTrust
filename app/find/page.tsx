@@ -6,18 +6,13 @@ import {
   CubeIcon,
   PaintBrushIcon,
   WrenchIcon,
+  Squares2X2Icon,
+  SunIcon,
+  HomeIcon,
+  RectangleGroupIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
-
-const TRADES = [
-  'Electrician',
-  'Plumber',
-  'Gas Engineer',
-  'Builder',
-  'Joiner',
-  'Plasterer',
-  'Painter & Decorator',
-  'General Maintenance',
-];
+import { TRADES, slugifyTrade } from '../../lib/trades';
 
 function TradeIcon({ trade }: { trade: string }) {
   switch (trade) {
@@ -45,17 +40,19 @@ function TradeIcon({ trade }: { trade: string }) {
       return <PaintBrushIcon className="h-10 w-10 text-[#0A1628]" />;
     case 'General Maintenance':
       return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
+    case 'Tiler':
+      return <Squares2X2Icon className="h-10 w-10 text-[#0A1628]" />;
+    case 'Landscaper':
+      return <SunIcon className="h-10 w-10 text-[#0A1628]" />;
+    case 'Roofer':
+      return <HomeIcon className="h-10 w-10 text-[#0A1628]" />;
+    case 'Carpet Fitter':
+      return <RectangleGroupIcon className="h-10 w-10 text-[#0A1628]" />;
+    case 'Handyman':
+      return <WrenchScrewdriverIcon className="h-10 w-10 text-[#0A1628]" />;
     default:
       return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
   }
-}
-
-function slugifyTrade(trade: string) {
-  return trade
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
 }
 
 export default function FindPage() {

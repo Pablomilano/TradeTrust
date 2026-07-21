@@ -5,6 +5,16 @@ import { supabase } from '../../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../lib/useAuth';
 
+function toFriendlyAuthError(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes('failed to fetch') || normalized.includes('err_name_not_resolved')) {
+    return 'Cannot reach Supabase right now. Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your deployment environment, then redeploy.';
+  }
+
+  return message;
+}
+
 export default function SignInPage() {
   const router = useRouter();
   const { session } = useAuth();
@@ -21,7 +31,7 @@ export default function SignInPage() {
     const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (signInError) {
-      setError(signInError.message);
+      setError(toFriendlyAuthError(signInError.message));
       setLoading(false);
       return;
     }

@@ -4,6 +4,16 @@ import { useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
+function toFriendlyAuthError(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes('failed to fetch') || normalized.includes('err_name_not_resolved')) {
+    return 'Cannot reach Supabase right now. Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your deployment environment, then redeploy.';
+  }
+
+  return message;
+}
+
 export default function SignUpPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -19,7 +29,7 @@ export default function SignUpPage() {
     const { error: signUpError } = await supabase.auth.signUp({ email, password });
 
     if (signUpError) {
-      setError(signUpError.message);
+      setError(toFriendlyAuthError(signUpError.message));
       setLoading(false);
       return;
     }

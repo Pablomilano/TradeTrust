@@ -1,4 +1,17 @@
-export type Trade = 'electrician' | 'plumber' | 'builder' | 'multi-trade';
+export type Trade =
+  | 'electrician'
+  | 'plumber'
+  | 'gas-engineer'
+  | 'builder'
+  | 'joiner'
+  | 'plasterer'
+  | 'painter-and-decorator'
+  | 'general-maintenance'
+  | 'tiler'
+  | 'landscaper-gardener'
+  | 'roofer'
+  | 'carpet-fitter'
+  | 'handyman';
 
 export type SubscriptionPlan = 'basic' | 'pro';
 

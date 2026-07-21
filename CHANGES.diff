@@ -1,0 +1,311 @@
+diff --git a/app/dashboard/page.tsx b/app/dashboard/page.tsx
+index 9d86f9b..05f38ab 100644
+--- a/app/dashboard/page.tsx
++++ b/app/dashboard/page.tsx
+@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
+ import { useRouter } from 'next/navigation';
+ import { useAuth } from '../../lib/useAuth';
+ import { supabase } from '../../lib/supabaseClient';
++import { TRADES, type TradeType } from '../../lib/trades';
+ 
+ interface ClientRecord {
+   id: string;
+@@ -16,8 +17,6 @@ interface ClientRecord {
+ 
+ type JobStatus = 'pending' | 'active' | 'done';
+ 
+-type TradeType = 'Electrician' | 'Plumber' | 'Gas Engineer' | 'Builder' | 'Joiner' | 'Plasterer' | 'Painter & Decorator' | 'General Maintenance';
+-
+ interface JobRecord {
+   id: string;
+   tradesperson_id: string;
+@@ -137,6 +136,11 @@ export default function DashboardPage() {
+   const [reviewLinkMessage, setReviewLinkMessage] = useState<string | null>(null);
+   const [newClient, setNewClient] = useState({ name: '', phone: '', email: '', address: '' });
+   const [newJob, setNewJob] = useState({ title: '', description: '', client_id: '', status: 'pending' as JobStatus });
++  const [smsJob, setSmsJob] = useState<JobRecord | null>(null);
++  const [smsDraft, setSmsDraft] = useState('');
++  const [smsDrafting, setSmsDrafting] = useState(false);
++  const [smsSending, setSmsSending] = useState(false);
++  const [smsError, setSmsError] = useState<string | null>(null);
+   const fileInputRef = useRef<HTMLInputElement | null>(null);
+   const [profileForm, setProfileForm] = useState<ProfileForm>({
+     first_name: '',
+@@ -350,7 +354,7 @@ export default function DashboardPage() {
+     setProfileSaving(false);
+   };
+ 
+-  const tradeOptions: TradeType[] = ['Electrician', 'Plumber', 'Gas Engineer', 'Builder', 'Joiner', 'Plasterer', 'Painter & Decorator', 'General Maintenance'];
++  const tradeOptions: TradeType[] = [...TRADES];
+ 
+   const getProfileInitials = () => {
+     const businessName = profileForm.business_name?.trim();
+@@ -542,6 +546,62 @@ export default function DashboardPage() {
+     return Date.now() - new Date(job.last_contacted_at).getTime() > 5 * 24 * 60 * 60 * 1000;
+   };
+ 
++  const openSmsDraft = async (job: JobRecord) => {
++    if (!session) return;
++    setSmsJob(job);
++    setSmsDraft('');
++    setSmsError(null);
++    setSmsDrafting(true);
++    try {
++      const response = await fetch('/api/draft-sms', {
++        method: 'POST',
++        headers: {
++          'Content-Type': 'application/json',
++          Authorization: `Bearer ${session.access_token}`,
++        },
++        body: JSON.stringify({ jobId: job.id }),
++      });
++      const data = await response.json();
++      if (!response.ok) {
++        setSmsError(data.error || 'Failed to draft SMS');
++      } else {
++        setSmsDraft(data.draft);
++      }
++    } catch {
++      setSmsError('Failed to reach the server');
++    }
++    setSmsDrafting(false);
++  };
++
++  const handleSendSms = async () => {
++    if (!session || !smsJob || !smsDraft.trim()) return;
++    setSmsSending(true);
++    setSmsError(null);
++    try {
++      const response = await fetch('/api/send-sms', {
++        method: 'POST',
++        headers: {
++          'Content-Type': 'application/json',
++          Authorization: `Bearer ${session.access_token}`,
++        },
++        body: JSON.stringify({ jobId: smsJob.id, message: smsDraft }),
++      });
++      const data = await response.json();
++      if (!response.ok) {
++        setSmsError(data.error || 'Failed to send SMS');
++      } else {
++        setJobs((prev) =>
++          prev.map((job) => (job.id === smsJob.id ? { ...job, last_contacted_at: data.lastContactedAt } : job))
++        );
++        setSmsJob(null);
++        setSmsDraft('');
++      }
++    } catch {
++      setSmsError('Failed to reach the server');
++    }
++    setSmsSending(false);
++  };
++
+   const jobsByStatus = {
+     pending: jobs.filter((job) => job.status === 'pending'),
+     active: jobs.filter((job) => job.status === 'active'),
+@@ -911,6 +971,15 @@ export default function DashboardPage() {
+                           </div>
+                           <p className="mt-3 text-sm text-muted">Status: {job.status.charAt(0).toUpperCase() + job.status.slice(1)}</p>
+                           <p className="text-sm text-muted">Last contacted: {formatContactDate(job.last_contacted_at)}</p>
++                          {cold && (
++                            <button
++                              type="button"
++                              onClick={() => openSmsDraft(job)}
++                              className="mt-3 inline-flex items-center justify-center rounded-full border border-brand-500 px-4 py-2 text-xs font-semibold text-brand-500 hover:bg-brand-500/10"
++                            >
++                              Draft follow-up SMS
++                            </button>
++                          )}
+                         </div>
+                       );
+                     })}
+@@ -922,6 +991,55 @@ export default function DashboardPage() {
+         </div>
+       </section>
+ 
++      {smsJob && (
++        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
++          <div className="w-full max-w-md rounded-[24px] border border-border bg-white p-6 shadow-card">
++            <div className="flex items-center justify-between gap-3">
++              <div>
++                <p className="font-semibold text-text">Follow-up SMS</p>
++                <p className="text-sm text-muted">{smsJob.title}</p>
++              </div>
++              <button
++                type="button"
++                className="text-sm font-semibold text-muted"
++                onClick={() => {
++                  setSmsJob(null);
++                  setSmsDraft('');
++                  setSmsError(null);
++                }}
++              >
++                Cancel
++              </button>
++            </div>
++
++            {smsDrafting ? (
++              <p className="mt-4 text-sm text-muted">Drafting message…</p>
++            ) : (
++              <textarea
++                value={smsDraft}
++                onChange={(e) => setSmsDraft(e.target.value)}
++                rows={5}
++                className="mt-4 w-full rounded-3xl border border-border bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
++                placeholder="AI-drafted message will appear here — review and edit before sending."
++              />
++            )}
++
++            {smsError && <p className="mt-3 text-sm text-red-600">{smsError}</p>}
++
++            <p className="mt-3 text-xs text-muted">Review before sending — this goes straight to the client's phone.</p>
++
++            <button
++              type="button"
++              onClick={handleSendSms}
++              disabled={smsDrafting || smsSending || !smsDraft.trim()}
++              className="mt-4 inline-flex items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:brightness-95 disabled:opacity-50"
++            >
++              {smsSending ? 'Sending…' : 'Send SMS'}
++            </button>
++          </div>
++        </div>
++      )}
++
+       <nav className="fixed bottom-0 left-0 right-0 border-t border-border bg-white/95 backdrop-blur-md">
+         <div className="container grid grid-cols-5 gap-2 px-0 py-3">
+           <a href="#clients" className="flex flex-col items-center gap-1 rounded-3xl bg-[#f8f8fa] px-2 py-3 text-center text-[11px] font-semibold text-text hover:bg-[#efeff4]">
+diff --git a/app/find/[trade]/page.tsx b/app/find/[trade]/page.tsx
+index 1a8346c..4524af3 100644
+--- a/app/find/[trade]/page.tsx
++++ b/app/find/[trade]/page.tsx
+@@ -4,23 +4,13 @@ import { useEffect, useState, type FormEvent } from 'react';
+ import { useParams, useRouter, useSearchParams } from 'next/navigation';
+ import Link from 'next/link';
+ import { createClient } from '@supabase/supabase-js';
++import { TRADE_LABELS } from '../../../lib/trades';
+ 
+ const supabase = createClient(
+   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+ );
+ 
+-const TRADE_LABELS: Record<string, string> = {
+-  electrician: 'Electrician',
+-  plumber: 'Plumber',
+-  'gas-engineer': 'Gas Engineer',
+-  builder: 'Builder',
+-  joiner: 'Joiner',
+-  plasterer: 'Plasterer',
+-  'painter-and-decorator': 'Painter & Decorator',
+-  'general-maintenance': 'General Maintenance',
+-};
+-
+ interface Profile {
+   id: string;
+   business_name: string | null;
+diff --git a/app/find/page.tsx b/app/find/page.tsx
+index b8414b9..27c3a14 100644
+--- a/app/find/page.tsx
++++ b/app/find/page.tsx
+@@ -6,18 +6,13 @@ import {
+   CubeIcon,
+   PaintBrushIcon,
+   WrenchIcon,
++  Squares2X2Icon,
++  SunIcon,
++  HomeIcon,
++  RectangleGroupIcon,
++  WrenchScrewdriverIcon,
+ } from '@heroicons/react/24/outline';
+-
+-const TRADES = [
+-  'Electrician',
+-  'Plumber',
+-  'Gas Engineer',
+-  'Builder',
+-  'Joiner',
+-  'Plasterer',
+-  'Painter & Decorator',
+-  'General Maintenance',
+-];
++import { TRADES, slugifyTrade } from '../../lib/trades';
+ 
+ function TradeIcon({ trade }: { trade: string }) {
+   switch (trade) {
+@@ -45,19 +40,21 @@ function TradeIcon({ trade }: { trade: string }) {
+       return <PaintBrushIcon className="h-10 w-10 text-[#0A1628]" />;
+     case 'General Maintenance':
+       return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
++    case 'Tiler':
++      return <Squares2X2Icon className="h-10 w-10 text-[#0A1628]" />;
++    case 'Landscaper':
++      return <SunIcon className="h-10 w-10 text-[#0A1628]" />;
++    case 'Roofer':
++      return <HomeIcon className="h-10 w-10 text-[#0A1628]" />;
++    case 'Carpet Fitter':
++      return <RectangleGroupIcon className="h-10 w-10 text-[#0A1628]" />;
++    case 'Handyman':
++      return <WrenchScrewdriverIcon className="h-10 w-10 text-[#0A1628]" />;
+     default:
+       return <WrenchIcon className="h-10 w-10 text-[#0A1628]" />;
+   }
+ }
+ 
+-function slugifyTrade(trade: string) {
+-  return trade
+-    .toLowerCase()
+-    .replace(/&/g, 'and')
+-    .replace(/[^a-z0-9]+/g, '-')
+-    .replace(/(^-|-$)/g, '');
+-}
+-
+ export default function FindPage() {
+   return (
+     <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
+diff --git a/app/page.tsx b/app/page.tsx
+index d3e649a..5396c04 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -3,26 +3,9 @@
+ import Link from 'next/link';
+ import { useRouter } from 'next/navigation';
+ import { useState, type FormEvent } from 'react';
++import { TRADES, slugifyTrade } from '../lib/trades';
+ 
+-const TRADE_OPTIONS = [
+-  'All trades',
+-  'Electrician',
+-  'Plumber',
+-  'Gas Engineer',
+-  'Builder',
+-  'Joiner',
+-  'Plasterer',
+-  'Painter & Decorator',
+-  'General Maintenance',
+-];
+-
+-function slugifyTrade(trade: string) {
+-  return trade
+-    .toLowerCase()
+-    .replace(/&/g, 'and')
+-    .replace(/[^a-z0-9]+/g, '-')
+-    .replace(/(^-|-$)/g, '');
+-}
++const TRADE_OPTIONS = ['All trades', ...TRADES];
+ 
+ export default function Home() {
+   const router = useRouter();
+diff --git a/db/schema.sql b/db/schema.sql
+index 1860856..313038b 100644
+--- a/db/schema.sql
++++ b/db/schema.sql
+@@ -56,7 +56,7 @@ create table profiles (
+   first_name text,
+   last_name text,
+   business_name text,
+-  trade text not null check (trade in ('Electrician','Plumber','Gas Engineer','Builder','Joiner','Plasterer','Painter & Decorator','General Maintenance')),
++  trade text not null check (trade in ('Electrician','Plumber','Gas Engineer','Builder','Joiner','Plasterer','Painter & Decorator','General Maintenance','Tiler','Landscaper','Roofer','Carpet Fitter','Handyman')),
+   coverage_area text,
+   coverage_radius smallint check (coverage_radius in (5, 10, 15, 20, 25)),
+   bio text,

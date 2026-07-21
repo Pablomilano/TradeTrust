@@ -4,22 +4,12 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { TRADE_LABELS } from '../../../lib/trades';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 );
-
-const TRADE_LABELS: Record<string, string> = {
-  electrician: 'Electrician',
-  plumber: 'Plumber',
-  'gas-engineer': 'Gas Engineer',
-  builder: 'Builder',
-  joiner: 'Joiner',
-  plasterer: 'Plasterer',
-  'painter-and-decorator': 'Painter & Decorator',
-  'general-maintenance': 'General Maintenance',
-};
 
 interface Profile {
   id: string;

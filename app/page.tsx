@@ -3,26 +3,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
+import { TRADES, slugifyTrade } from '../lib/trades';
 
-const TRADE_OPTIONS = [
-  'All trades',
-  'Electrician',
-  'Plumber',
-  'Gas Engineer',
-  'Builder',
-  'Joiner',
-  'Plasterer',
-  'Painter & Decorator',
-  'General Maintenance',
-];
-
-function slugifyTrade(trade: string) {
-  return trade
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
+const TRADE_OPTIONS = ['All trades', ...TRADES];
 
 export default function Home() {
   const router = useRouter();

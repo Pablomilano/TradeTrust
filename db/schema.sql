@@ -56,7 +56,7 @@ create table profiles (
   first_name text,
   last_name text,
   business_name text,
-  trade text not null check (trade in ('Electrician','Plumber','Gas Engineer','Builder','Joiner','Plasterer','Painter & Decorator','General Maintenance')),
+  trade text not null check (trade in ('Electrician','Plumber','Gas Engineer','Builder','Joiner','Plasterer','Painter & Decorator','General Maintenance','Tiler','Landscaper','Roofer','Carpet Fitter','Handyman')),
   coverage_area text,
   coverage_radius smallint check (coverage_radius in (5, 10, 15, 20, 25)),
   bio text,

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../lib/useAuth';
 import { supabase } from '../../lib/supabaseClient';
+import { TRADES, type TradeType } from '../../lib/trades';
 
 interface ClientRecord {
   id: string;
@@ -15,8 +16,6 @@ interface ClientRecord {
 }
 
 type JobStatus = 'pending' | 'active' | 'done';
-
-type TradeType = 'Electrician' | 'Plumber' | 'Gas Engineer' | 'Builder' | 'Joiner' | 'Plasterer' | 'Painter & Decorator' | 'General Maintenance';
 
 interface JobRecord {
   id: string;
@@ -137,6 +136,11 @@ export default function DashboardPage() {
   const [reviewLinkMessage, setReviewLinkMessage] = useState<string | null>(null);
   const [newClient, setNewClient] = useState({ name: '', phone: '', email: '', address: '' });
   const [newJob, setNewJob] = useState({ title: '', description: '', client_id: '', status: 'pending' as JobStatus });
+  const [smsJob, setSmsJob] = useState<JobRecord | null>(null);
+  const [smsDraft, setSmsDraft] = useState('');
+  const [smsDrafting, setSmsDrafting] = useState(false);
+  const [smsSending, setSmsSending] = useState(false);
+  const [smsError, setSmsError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [profileForm, setProfileForm] = useState<ProfileForm>({
     first_name: '',
@@ -350,7 +354,7 @@ export default function DashboardPage() {
     setProfileSaving(false);
   };
 
-  const tradeOptions: TradeType[] = ['Electrician', 'Plumber', 'Gas Engineer', 'Builder', 'Joiner', 'Plasterer', 'Painter & Decorator', 'General Maintenance'];
+  const tradeOptions: TradeType[] = [...TRADES];
 
   const getProfileInitials = () => {
     const businessName = profileForm.business_name?.trim();
@@ -540,6 +544,62 @@ export default function DashboardPage() {
   const isGoingCold = (job: JobRecord) => {
     if (!job.last_contacted_at) return true;
     return Date.now() - new Date(job.last_contacted_at).getTime() > 5 * 24 * 60 * 60 * 1000;
+  };
+
+  const openSmsDraft = async (job: JobRecord) => {
+    if (!session) return;
+    setSmsJob(job);
+    setSmsDraft('');
+    setSmsError(null);
+    setSmsDrafting(true);
+    try {
+      const response = await fetch('/api/draft-sms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ jobId: job.id }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setSmsError(data.error || 'Failed to draft SMS');
+      } else {
+        setSmsDraft(data.draft);
+      }
+    } catch {
+      setSmsError('Failed to reach the server');
+    }
+    setSmsDrafting(false);
+  };
+
+  const handleSendSms = async () => {
+    if (!session || !smsJob || !smsDraft.trim()) return;
+    setSmsSending(true);
+    setSmsError(null);
+    try {
+      const response = await fetch('/api/send-sms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ jobId: smsJob.id, message: smsDraft }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setSmsError(data.error || 'Failed to send SMS');
+      } else {
+        setJobs((prev) =>
+          prev.map((job) => (job.id === smsJob.id ? { ...job, last_contacted_at: data.lastContactedAt } : job))
+        );
+        setSmsJob(null);
+        setSmsDraft('');
+      }
+    } catch {
+      setSmsError('Failed to reach the server');
+    }
+    setSmsSending(false);
   };
 
   const jobsByStatus = {
@@ -911,6 +971,15 @@ export default function DashboardPage() {
                           </div>
                           <p className="mt-3 text-sm text-muted">Status: {job.status.charAt(0).toUpperCase() + job.status.slice(1)}</p>
                           <p className="text-sm text-muted">Last contacted: {formatContactDate(job.last_contacted_at)}</p>
+                          {cold && (
+                            <button
+                              type="button"
+                              onClick={() => openSmsDraft(job)}
+                              className="mt-3 inline-flex items-center justify-center rounded-full border border-brand-500 px-4 py-2 text-xs font-semibold text-brand-500 hover:bg-brand-500/10"
+                            >
+                              Draft follow-up SMS
+                            </button>
+                          )}
                         </div>
                       );
                     })}
@@ -921,6 +990,55 @@ export default function DashboardPage() {
           )}
         </div>
       </section>
+
+      {smsJob && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-[24px] border border-border bg-white p-6 shadow-card">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="font-semibold text-text">Follow-up SMS</p>
+                <p className="text-sm text-muted">{smsJob.title}</p>
+              </div>
+              <button
+                type="button"
+                className="text-sm font-semibold text-muted"
+                onClick={() => {
+                  setSmsJob(null);
+                  setSmsDraft('');
+                  setSmsError(null);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+
+            {smsDrafting ? (
+              <p className="mt-4 text-sm text-muted">Drafting message…</p>
+            ) : (
+              <textarea
+                value={smsDraft}
+                onChange={(e) => setSmsDraft(e.target.value)}
+                rows={5}
+                className="mt-4 w-full rounded-3xl border border-border bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                placeholder="AI-drafted message will appear here — review and edit before sending."
+              />
+            )}
+
+            {smsError && <p className="mt-3 text-sm text-red-600">{smsError}</p>}
+
+            <p className="mt-3 text-xs text-muted">Review before sending — this goes straight to the client's phone.</p>
+
+            <button
+              type="button"
+              onClick={handleSendSms}
+              disabled={smsDrafting || smsSending || !smsDraft.trim()}
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:brightness-95 disabled:opacity-50"
+            >
+              {smsSending ? 'Sending…' : 'Send SMS'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <nav className="fixed bottom-0 left-0 right-0 border-t border-border bg-white/95 backdrop-blur-md">
         <div className="container grid grid-cols-5 gap-2 px-0 py-3">

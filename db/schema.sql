@@ -161,3 +161,17 @@ for delete using (
   bucket_id = 'avatars'
   and auth.uid()::text = (storage.foldername(name))[1]
 );
+
+-- Early access waitlist (tradespeople sign up before public launch)
+create table waitlist_signups (
+  id uuid primary key default uuid_generate_v4(),
+  name text not null,
+  trade text not null,
+  coverage_area text not null,
+  email text not null,
+  phone text,
+  created_at timestamptz not null default now()
+);
+
+alter table waitlist_signups enable row level security;
+create policy "Anyone can join the waitlist" on waitlist_signups for insert with check (true);

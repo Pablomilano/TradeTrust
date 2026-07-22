@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { supabase } from '../../lib/supabaseClient';
 import { TRADES } from '../../lib/trades';
 
 export default function EarlyAccessPage() {
@@ -22,18 +21,21 @@ export default function EarlyAccessPage() {
     setSubmitting(true);
     setError(null);
 
-    const { error: insertError } = await supabase.from('waitlist_signups').insert([
-      {
+    const response = await fetch('/api/waitlist-signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         name: form.name.trim(),
         trade: form.trade,
         coverage_area: form.coverage_area.trim(),
         email: form.email.trim(),
         phone: form.phone.trim() || null,
-      },
-    ]);
+      }),
+    });
 
-    if (insertError) {
-      setError('Something went wrong submitting your details — please try again.');
+    if (!response.ok) {
+      const json = await response.json().catch(() => ({}));
+      setError(json.error || 'Something went wrong submitting your details — please try again.');
       setSubmitting(false);
       return;
     }

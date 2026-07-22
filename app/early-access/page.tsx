@@ -55,12 +55,12 @@ export default function EarlyAccessPage() {
       <section className="w-full bg-[#0A1628] text-white">
         <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:py-28">
           <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-amber-300">
-            Early access · opening one trade at a time
+            Early access · founding members only
           </span>
-          <h1 className="mt-6 text-4xl font-extrabold leading-tight sm:text-5xl">Get seen before the crowd does.</h1>
+          <h1 className="mt-6 text-4xl font-extrabold leading-tight sm:text-5xl">No more Checkatrade. No bidding wars. No 20% fees.</h1>
           <p className="mx-auto mt-5 max-w-xl text-lg text-gray-300">
-            We're onboarding a small number of tradespeople in each area before TradeTrust opens to clients.
-            Real profiles, real reviews, no bidding for leads. Once your trade fills up locally, the list closes.
+            TradeTrust is a marketplace built for tradespeople, not against them. Real profiles, real reviews, fair leads — and your client relationships stay yours.
+            We're opening a limited number of spots per trade per area. Once your trade fills up locally, the list closes.
           </p>
         </div>
       </section>

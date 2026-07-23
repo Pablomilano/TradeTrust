@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../lib/useAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { TRADES, type TradeType } from '../../lib/trades';
+import TradeTrustLogo from '../../components/TradeTrustLogo';
 
 interface ClientRecord {
   id: string;
@@ -632,7 +633,7 @@ export default function DashboardPage() {
       <header className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 py-5 backdrop-blur-md shadow-sm">
         <div className="container flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-muted">TradeTrust</p>
+            <TradeTrustLogo variant="dark" className="mb-1" />
             <h1 className="mt-1 text-2xl font-semibold text-text">Job board</h1>
           </div>
           <button className="rounded-full border border-border px-4 py-2 text-sm text-text" onClick={() => supabase.auth.signOut().then(() => router.push('/'))}>Sign out</button>
@@ -659,7 +660,7 @@ export default function DashboardPage() {
             <button
               type="button"
               onClick={() => router.push('/dashboard/enquiries')}
-              className="mt-5 flex items-center justify-between rounded-3xl border border-brand-200 bg-brand-50 px-4 py-3 text-left text-sm text-brand-700"
+              className="mt-5 flex items-center justify-between rounded-3xl border border-brand-500/30 bg-brand-500/10 px-4 py-3 text-left text-sm text-brand-500"
             >
               <span>📩 {unreadEnquiriesCount} new enquiry{unreadEnquiriesCount > 1 ? 'ies' : 'y'}</span>
               <span className="font-semibold">Open inbox →</span>
@@ -762,7 +763,7 @@ export default function DashboardPage() {
             <button
               type="button"
               onClick={handleCopyReviewLink}
-              className="mt-3 inline-flex items-center justify-center rounded-full bg-[#0A1628] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-95"
+              className="mt-3 inline-flex items-center justify-center rounded-full bg-[#14171B] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-95"
             >
               Share review link
             </button>
@@ -778,7 +779,7 @@ export default function DashboardPage() {
               {photoUrl ? (
                 <img src={photoUrl} alt="Profile preview" className="h-full w-full object-cover" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-[#0A1628] text-xl font-semibold text-white">
+                <div className="flex h-full w-full items-center justify-center bg-[#14171B] text-xl font-semibold text-white">
                   {getProfileInitials()}
                 </div>
               )}

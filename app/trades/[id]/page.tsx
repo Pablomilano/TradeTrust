@@ -165,7 +165,7 @@ export default function TradePage() {
 
   if (error || !profile) {
     return (
-      <div className="min-h-screen bg-white px-4 py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-[#14171B] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
             {error || 'Profile not found'}
@@ -200,9 +200,9 @@ export default function TradePage() {
     : '';
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#14171B]">
       {/* Header */}
-      <div className="border-b border-border bg-gradient-to-r from-brand-50 to-white px-4 py-6 sm:px-6 lg:px-8">
+      <div className="border-b border-white/10 bg-[#14171B] px-4 py-6 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <button
             onClick={() => router.back()}
@@ -210,7 +210,7 @@ export default function TradePage() {
           >
             ← Back to search
           </button>
-          <h1 className="text-3xl font-bold text-text">
+          <h1 className="text-3xl font-bold text-[#F8F5EE]">
             {profile.business_name || displayName}
           </h1>
           <p className="mt-1 text-lg text-brand-500 font-semibold">
@@ -223,12 +223,12 @@ export default function TradePage() {
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Profile Info */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 rounded-2xl border border-border bg-white p-6 shadow-card">
             {/* About */}
             {profile.bio && (
               <div className="mb-6">
                 <h2 className="font-semibold text-text mb-2">About</h2>
-                <p className="text-text-secondary text-sm leading-relaxed">
+                <p className="text-muted text-sm leading-relaxed">
                   {profile.bio}
                 </p>
               </div>
@@ -237,11 +237,11 @@ export default function TradePage() {
             {/* Coverage */}
             <div className="mb-6">
               <h2 className="font-semibold text-text mb-2">Coverage</h2>
-              <p className="text-text-secondary text-sm">
+              <p className="text-muted text-sm">
                 {profile.coverage_area || 'Coverage area not specified'}
               </p>
               {profile.coverage_radius && (
-                <p className="text-text-secondary text-sm">
+                <p className="text-muted text-sm">
                   Radius: {profile.coverage_radius} miles
                 </p>
               )}
@@ -257,7 +257,7 @@ export default function TradePage() {
                   {profile.accreditations.map((acc, i) => (
                     <span
                       key={i}
-                      className="inline-block bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-xs font-medium"
+                      className="inline-block bg-brand-500/10 text-brand-500 px-3 py-1 rounded-full text-xs font-medium"
                     >
                       ✓ {acc}
                     </span>
@@ -268,7 +268,7 @@ export default function TradePage() {
 
             <div className="mb-6">
               <h2 className="font-semibold text-text mb-2">Reviews</h2>
-              <p className="mb-3 text-sm text-text-secondary">
+              <p className="mb-3 text-sm text-muted">
                 {reviews.length > 0
                   ? `${reviewAverage} / 5 from ${reviews.length} review${reviews.length === 1 ? '' : 's'}`
                   : 'No reviews yet'}
@@ -281,8 +281,8 @@ export default function TradePage() {
                         <p className="text-sm font-semibold text-text">{review.reviewer_name}</p>
                         <p className="text-sm text-amber-500">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</p>
                       </div>
-                      <p className="mt-2 text-sm text-text-secondary">{review.comment}</p>
-                      <p className="mt-2 text-xs text-text-secondary">
+                      <p className="mt-2 text-sm text-muted">{review.comment}</p>
+                      <p className="mt-2 text-xs text-muted">
                         {new Date(review.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>
                     </article>
@@ -297,7 +297,7 @@ export default function TradePage() {
             <div className="rounded-lg border border-border bg-[#fbfbfb] p-6 sticky top-4">
               {whatsappHref && (
                 <div className="mb-5">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
                     Quick contact
                   </p>
                   <a
@@ -426,7 +426,7 @@ export default function TradePage() {
               </form>
 
               {profile.phone && (
-                <p className="mt-4 text-xs text-text-secondary text-center">
+                <p className="mt-4 text-xs text-muted text-center">
                   Or call: {profile.phone}
                 </p>
               )}

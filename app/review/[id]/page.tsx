@@ -102,7 +102,7 @@ export default function ReviewSubmissionPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-[#f7f9fc] to-white px-4 py-10 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-[#14171B] px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl rounded-2xl border border-border bg-white p-6 text-sm text-muted">Loading review page...</div>
       </main>
     );
@@ -110,18 +110,18 @@ export default function ReviewSubmissionPage() {
 
   if (error && !profile) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-[#f7f9fc] to-white px-4 py-10 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-[#14171B] px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#f7f9fc] to-white px-4 py-10 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#14171B] px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5f6368]">Leave a review</p>
         <h1 className="mt-2 text-2xl font-bold text-[#1d1d1f]">{displayName}</h1>
-        {profile?.trade && <p className="mt-1 text-sm font-semibold text-[#0071e3]">{profile.trade}</p>}
+        {profile?.trade && <p className="mt-1 text-sm font-semibold text-[#E8631C]">{profile.trade}</p>}
 
         {submittedName ? (
           <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
@@ -145,7 +145,7 @@ export default function ReviewSubmissionPage() {
                 value={reviewerName}
                 onChange={(event) => setReviewerName(event.target.value)}
                 placeholder="e.g. Sarah"
-                className="rounded-xl border border-[#d9e1ed] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#0071e3]"
+                className="rounded-xl border border-[#d9e1ed] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#E8631C]"
                 required
               />
             </label>
@@ -180,7 +180,7 @@ export default function ReviewSubmissionPage() {
                 placeholder="Tell others what your experience was like..."
                 minLength={20}
                 rows={5}
-                className="rounded-xl border border-[#d9e1ed] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#0071e3]"
+                className="rounded-xl border border-[#d9e1ed] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#E8631C]"
                 required
               />
               <span className="text-xs text-[#5f6368]">Minimum 20 characters.</span>
@@ -189,7 +189,7 @@ export default function ReviewSubmissionPage() {
             <button
               type="submit"
               disabled={submitting || !canSubmit}
-              className="inline-flex w-full items-center justify-center rounded-full bg-[#0071e3] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#005ec8] disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center rounded-full bg-[#E8631C] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#c9550f] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? 'Posting...' : 'Post review'}
             </button>

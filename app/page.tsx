@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { TRADES, slugifyTrade } from '../lib/trades';
+import TradeTrustLogo from '../components/TradeTrustLogo';
 
 const TRADE_OPTIONS = ['All trades', ...TRADES];
 
@@ -24,19 +25,19 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-text">
+    <main className="min-h-screen bg-[#14171B] text-[#F8F5EE]">
       <header className="border-b border-border bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <h1 className="text-lg font-bold">TradeTrust</h1>
+          <TradeTrustLogo variant="dark" />
           <nav className="flex gap-4">
-            <Link href="/auth/signin" className="text-sm text-text-secondary hover:text-text">
+            <Link href="/auth/signin" className="text-sm text-muted hover:text-text">
               Sign in
             </Link>
           </nav>
         </div>
       </header>
 
-      <section className="w-full bg-[#0A1628] text-white">
+      <section className="w-full bg-[#14171B] text-white">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
           <div className="max-w-3xl">
             <h2 className="text-4xl font-extrabold leading-tight sm:text-5xl md:text-6xl">Find a tradesperson you can actually trust</h2>
@@ -71,7 +72,7 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="min-h-[48px] w-full rounded-xl bg-[#0071e3] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#005ec8] md:w-auto md:rounded-r-full md:shadow-none"
+                  className="min-h-[48px] w-full rounded-xl bg-[#E8631C] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#c9550f] md:w-auto md:rounded-r-full md:shadow-none"
                 >
                   Search
                 </button>
@@ -85,15 +86,15 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl gap-8 px-4 md:grid-cols-2">
           <div className="rounded-2xl bg-white p-8 shadow-md">
             <div className="flex items-start gap-4">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.5" className="shrink-0">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14171B" strokeWidth="1.5" className="shrink-0">
                 <circle cx="11" cy="11" r="5.5" />
                 <path d="m15 15 4 4" />
               </svg>
               <div>
-                <h3 className="text-2xl font-bold">Find a tradesperson</h3>
-                <p className="mt-2 text-text-secondary">Browse verified tradespeople in your area. Get quotes, read reviews, and contact them instantly.</p>
+                <h3 className="text-2xl font-bold text-text">Find a tradesperson</h3>
+                <p className="mt-2 text-muted">Browse verified tradespeople in your area. Get quotes, read reviews, and contact them instantly.</p>
                 <div className="mt-4">
-                  <Link href="/find" className="inline-flex items-center rounded-full bg-[#0071e3] px-5 py-2 font-semibold text-white">Browse tradespeople →</Link>
+                  <Link href="/find" className="inline-flex items-center rounded-full bg-[#E8631C] px-5 py-2 font-semibold text-white">Browse tradespeople →</Link>
                 </div>
               </div>
             </div>
@@ -101,17 +102,17 @@ export default function Home() {
 
           <div className="rounded-2xl bg-white p-8 shadow-md">
             <div className="flex items-start gap-4">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.5" className="shrink-0">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14171B" strokeWidth="1.5" className="shrink-0">
                 <path d="M5 8.5A2.5 2.5 0 0 1 7.5 6h9A2.5 2.5 0 0 1 19 8.5v8A2.5 2.5 0 0 1 16.5 19h-9A2.5 2.5 0 0 1 5 16.5v-8Z" />
                 <path d="M8 6V4.5A1.5 1.5 0 0 1 9.5 3h5A1.5 1.5 0 0 1 16 4.5V6" />
                 <path d="M8 12h8" />
               </svg>
               <div>
-                <h3 className="text-2xl font-bold">Manage your business</h3>
-                <p className="mt-2 text-text-secondary">Create a profile, get enquiries from homeowners, and manage jobs all in one place.</p>
+                <h3 className="text-2xl font-bold text-text">Manage your business</h3>
+                <p className="mt-2 text-muted">Create a profile, get enquiries from homeowners, and manage jobs all in one place.</p>
                 <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">
-                  <Link href="/auth/signup" className="inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#0071e3] px-4 py-2 text-sm font-semibold text-white sm:px-5">Get started free</Link>
-                  <Link href="/auth/signin" className="inline-flex min-h-[40px] items-center justify-center rounded-full border border-[#0071e3] px-4 py-2 text-sm font-semibold text-[#0071e3] sm:px-5">Sign in</Link>
+                  <Link href="/auth/signup" className="inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#E8631C] px-4 py-2 text-sm font-semibold text-white sm:px-5">Get started free</Link>
+                  <Link href="/auth/signin" className="inline-flex min-h-[40px] items-center justify-center rounded-full border border-[#E8631C] px-4 py-2 text-sm font-semibold text-[#E8631C] sm:px-5">Sign in</Link>
                 </div>
               </div>
             </div>
@@ -120,42 +121,42 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <h3 className="mb-8 text-center text-2xl font-bold">Why TradeTrust</h3>
+        <h3 className="mb-8 text-center text-2xl font-bold text-[#F8F5EE]">Why TradeTrust</h3>
         <div className="grid gap-5 md:grid-cols-3 md:gap-6">
           <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-7">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.8" className="mx-auto mb-4">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#14171B" strokeWidth="1.8" className="mx-auto mb-4">
               <path d="M12 3l7 3v5c0 4.2-2.7 7.7-7 9-4.3-1.3-7-4.8-7-9V6l7-3Z" />
               <path d="m9.5 12 1.7 1.7 3.3-3.4" />
             </svg>
-            <h4 className="font-semibold">Verified profiles</h4>
-            <p className="mt-2 text-sm text-text-secondary">All tradespeople are real and vetted</p>
+            <h4 className="font-semibold text-text">Verified profiles</h4>
+            <p className="mt-2 text-sm text-muted">All tradespeople are real and vetted</p>
           </div>
 
           <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-7">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.8" className="mx-auto mb-4">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#14171B" strokeWidth="1.8" className="mx-auto mb-4">
               <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H10l-4 3v-3H7.5A2.5 2.5 0 0 1 5 13.5v-7Z" />
               <path d="m8.5 8.5 1.3 1.3 2.7-2.7" />
             </svg>
-            <h4 className="font-semibold">Real reviews</h4>
-            <p className="mt-2 text-sm text-text-secondary">Genuine feedback from real customers</p>
+            <h4 className="font-semibold text-text">Real reviews</h4>
+            <p className="mt-2 text-sm text-muted">Genuine feedback from real customers</p>
           </div>
 
           <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-7">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="1.8" className="mx-auto mb-4">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#14171B" strokeWidth="1.8" className="mx-auto mb-4">
               <circle cx="12" cy="12" r="8" />
               <path d="M12 7.2v9.6" />
               <path d="M9.2 10.2h5.6" />
             </svg>
-            <h4 className="font-semibold">No commission</h4>
-            <p className="mt-2 text-sm text-text-secondary">We keep things simple and fair</p>
+            <h4 className="font-semibold text-text">No commission</h4>
+            <p className="mt-2 text-sm text-muted">We keep things simple and fair</p>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-border bg-[#f7f7f8]">
+      <footer className="border-t border-border bg-[#f7f7f8] text-text">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6">
-          <div className="font-semibold">TradeTrust</div>
-          <div className="text-sm text-text-secondary">© 2025 TradeTrust</div>
+          <TradeTrustLogo variant="dark" />
+          <div className="text-sm text-muted">© 2026 TradeTrust</div>
         </div>
       </footer>
     </main>

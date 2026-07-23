@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../lib/useAuth';
+import TradeTrustLogo from '../../components/TradeTrustLogo';
 
 interface ProfileRow {
   id: string;
@@ -122,14 +123,14 @@ export default function AdminPage() {
   };
 
   if (authLoading) {
-    return <main className="flex min-h-screen items-center justify-center bg-bg text-sm text-muted">Loading…</main>;
+    return <main className="flex min-h-screen items-center justify-center bg-bg text-sm text-gray-400">Loading…</main>;
   }
 
   if (!session) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg text-center">
-        <p className="text-lg font-semibold text-text">Admin access requires sign-in.</p>
-        <Link href="/auth/signin" className="rounded-full bg-[#0071e3] px-5 py-3 text-sm font-semibold text-white">Sign in</Link>
+        <p className="text-lg font-semibold text-[#F8F5EE]">Admin access requires sign-in.</p>
+        <Link href="/auth/signin" className="rounded-full bg-[#E8631C] px-5 py-3 text-sm font-semibold text-white">Sign in</Link>
       </main>
     );
   }
@@ -139,10 +140,10 @@ export default function AdminPage() {
 
   return (
     <div className="flex min-h-screen bg-bg">
-      <aside className="hidden w-56 flex-shrink-0 bg-[#0A1628] text-white sm:block">
+      <aside className="hidden w-56 flex-shrink-0 bg-[#14171B] text-white sm:block">
         <div className="px-5 py-6">
-          <p className="text-lg font-bold">TradeTrust</p>
-          <p className="text-xs text-gray-400">Admin</p>
+          <TradeTrustLogo variant="light" />
+          <p className="mt-1 text-xs text-gray-400">Admin</p>
         </div>
         <nav className="flex flex-col gap-1 px-3">
           {([
@@ -169,14 +170,14 @@ export default function AdminPage() {
       <main className="flex-1 px-4 py-8 sm:px-8">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-center justify-between gap-4 sm:hidden">
-            <p className="text-lg font-bold text-text">Admin</p>
+            <p className="text-lg font-bold text-[#F8F5EE]">Admin</p>
           </div>
           <div className="mt-2 flex gap-2 sm:hidden">
             {(['overview', 'profiles', 'reviews'] as Section[]).map((key) => (
               <button
                 key={key}
                 onClick={() => setSection(key)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold ${section === key ? 'bg-[#0A1628] text-white' : 'bg-white text-muted'}`}
+                className={`rounded-full px-4 py-2 text-xs font-semibold ${section === key ? 'bg-[#14171B] text-white' : 'bg-white text-muted'}`}
               >
                 {key.charAt(0).toUpperCase() + key.slice(1)}
               </button>
@@ -188,7 +189,7 @@ export default function AdminPage() {
           )}
 
           {loading && !data ? (
-            <p className="mt-8 text-sm text-muted">Loading admin data…</p>
+            <p className="mt-8 text-sm text-gray-400">Loading admin data…</p>
           ) : data ? (
             <>
               {section === 'overview' && (

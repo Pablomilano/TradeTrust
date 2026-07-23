@@ -96,11 +96,11 @@ export default function TradeResultsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#f7f9fc] to-white pb-16">
+    <main className="min-h-screen bg-[#14171B] pb-16">
       <header className="border-b border-[#e6ebf2] bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5">
           <div>
-            <Link href="/find" className="text-sm font-medium text-[#0071e3] hover:underline">← Back to trades</Link>
+            <Link href="/find" className="text-sm font-medium text-[#E8631C] hover:underline">← Back to trades</Link>
             <h1 className="mt-2 text-3xl font-bold text-[#1d1d1f]">{titleForTrade(tradeFromRoute)}</h1>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function TradeResultsPage() {
               className="w-full rounded-xl border border-[#d9e1ed] bg-white px-4 py-3 text-sm text-[#1d1d1f] outline-none"
               placeholder="e.g. Widnes"
             />
-            <button type="submit" className="rounded-xl bg-[#0071e3] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#005ec8]">
+            <button type="submit" className="rounded-xl bg-[#E8631C] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#c9550f]">
               Search
             </button>
           </div>
@@ -142,8 +142,8 @@ export default function TradeResultsPage() {
 
               return (
                 <article key={profile.id} className="group relative overflow-hidden rounded-2xl border border-[#e6ebf2] bg-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                  <div className="h-8 w-full bg-[#0A1628]/95" />
-                  <div className="absolute left-5 top-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-[#0A1628] text-base font-semibold text-white shadow-md">
+                  <div className="h-8 w-full bg-[#14171B]/95" />
+                  <div className="absolute left-5 top-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-[#14171B] text-base font-semibold text-white shadow-md">
                     {hasPhoto ? (
                       <img src={profile.photo_url || ''} alt={profile.business_name || 'Tradesperson'} className="h-full w-full object-cover" />
                     ) : (
@@ -158,7 +158,7 @@ export default function TradeResultsPage() {
                           <h2 className="text-2xl font-bold leading-tight text-[#1d1d1f]">{profile.trade || tradeLabel}</h2>
                           <p className="mt-1 text-base font-semibold text-[#2f3640]">{profile.business_name || 'Tradesperson'}</p>
                           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[#5f6368]">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-4 w-4 text-[#0071e3]">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-4 w-4 text-[#E8631C]">
                               <path d="M12 21s6-5.5 6-10a6 6 0 1 0-12 0c0 4.5 6 10 6 10Z" />
                               <circle cx="12" cy="11" r="2.5" />
                             </svg>
@@ -196,7 +196,7 @@ export default function TradeResultsPage() {
                     <div className="mt-5 border-t border-[#eef2f7] pt-4">
                       <Link
                         href={`/trades/${profile.id}`}
-                        className="block w-full rounded-xl bg-[#0071e3] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#005ec8]"
+                        className="block w-full rounded-xl bg-[#E8631C] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#c9550f]"
                       >
                         View profile →
                       </Link>

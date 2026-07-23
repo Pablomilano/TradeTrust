@@ -38,8 +38,8 @@ export default function SignUpPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-card border border-border p-8">
+    <main className="min-h-screen flex items-center justify-center bg-[#14171B]">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-card border border-border p-8 text-text">
         <h1 className="text-2xl font-semibold mb-2">Create a TradeTrust account</h1>
         <p className="text-muted mb-6">Trusted tools for local tradespeople.</p>
 

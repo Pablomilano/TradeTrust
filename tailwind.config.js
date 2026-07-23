@@ -10,15 +10,16 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          500: '#0071e3',
+          500: '#E8631C',
         },
-        bg: '#fafafa',
+        bg: '#14171B',
         text: '#1d1d1f',
         muted: '#6e6e73',
         border: '#d2d2d7',
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'sans-serif'],
+        sans: ['var(--font-body)', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        display: ['var(--font-display)', 'sans-serif'],
       },
       boxShadow: {
         card: '0 6px 18px rgba(15, 23, 42, 0.06)',

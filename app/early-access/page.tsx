@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import TradeTrustLogo from '../../components/TradeTrustLogo';
 import { Archivo, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import { TRADES } from '../../lib/trades';
 
@@ -72,7 +73,9 @@ export default function EarlyAccessPage() {
     <main className={`${display.variable} ${body.variable} ${mono.variable} min-h-screen bg-[#14171B]`} style={{ fontFamily: 'var(--font-body)' }}>
       <header className="border-b border-white/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>TradeTrust</Link>
+          <Link href="/">
+            <TradeTrustLogo variant="light" />
+          </Link>
         </div>
       </header>
 

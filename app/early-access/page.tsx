@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { Archivo, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import { TRADES } from '../../lib/trades';
@@ -20,6 +20,31 @@ export default function EarlyAccessPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [spots, setSpots] = useState<{ taken: number; cap: number; remaining: number } | null>(null);
+
+  useEffect(() => {
+    const area = form.coverage_area.trim();
+    if (area.length < 2) {
+      setSpots(null);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams({ trade: form.trade, area });
+      fetch(`/api/waitlist-count?${params.toString()}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (json && typeof json.taken === 'number') {
+            setSpots(json);
+          }
+        })
+        .catch(() => {
+          // A failed count shouldn't block the form — just skip showing it.
+        });
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [form.trade, form.coverage_area]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -75,7 +100,7 @@ export default function EarlyAccessPage() {
             >
               No more Checkatrade.
               <br />
-              <span className="text-[#E8631C]">No bidding wars. No 20% fees.</span>
+              <span className="text-[#E8631C]">No £150/month. No 12-month contract.</span>
             </h1>
 
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-gray-300">
@@ -86,12 +111,12 @@ export default function EarlyAccessPage() {
             <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
               <div className="bg-[#1B1E24] p-5">
                 <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-gray-500" style={{ fontFamily: 'var(--font-mono)' }}>
-                  The old way
+                  Checkatrade & co.
                 </p>
                 <ul className="mt-3 space-y-2 text-sm text-gray-400">
-                  <li>Up to 20% commission per lead</li>
-                  <li>Bidding against 30+ other trades</li>
-                  <li>They own your reviews and data</li>
+                  <li>£60–150+ per month, whether you get leads or not</li>
+                  <li>12-month contract, even with zero leads</li>
+                  <li>Lose your reviews the day you stop paying</li>
                 </ul>
               </div>
               <div className="bg-[#1B1E24] p-5">
@@ -99,8 +124,8 @@ export default function EarlyAccessPage() {
                   The TradeTrust way
                 </p>
                 <ul className="mt-3 space-y-2 text-sm text-gray-200">
-                  <li>0% commission while you&apos;re founding</li>
-                  <li>One profile — no bidding, no race to the bottom</li>
+                  <li>Free, forever, as a founding member</li>
+                  <li>No contract — leave whenever you like</li>
                   <li>Your reviews and client relationships stay yours</li>
                 </ul>
               </div>
@@ -150,8 +175,8 @@ export default function EarlyAccessPage() {
           <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
             {[
               {
-                title: 'No fees while you\u2019re founding',
-                body: 'Founding members list for free — no Checkatrade-style commission, ever. Your profit stays yours.',
+                title: 'Free, forever, as a founding member',
+                body: 'Join now and you\u2019ll never pay. Once TradeTrust opens publicly, new members pay £24.99/month — still a fraction of Checkatrade.',
                 dot: '#E8631C',
               },
               {
@@ -171,6 +196,52 @@ export default function EarlyAccessPage() {
                 <p className="mt-2 text-sm leading-relaxed text-gray-400">{card.body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* COMPARISON TABLE */}
+      <section className="border-t border-white/10">
+        <div className="mx-auto max-w-5xl px-4 py-14 sm:py-16">
+          <h2 className="text-2xl font-black text-white sm:text-3xl" style={{ fontFamily: 'var(--font-display)' }}>
+            How the platforms compare
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-gray-400">
+            Approximate 2026 figures reported by independent trade-advice sites — actual cost varies by trade and
+            region, and most platforms don&apos;t publish exact pricing.
+          </p>
+
+          <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="bg-[#1B1E24] p-4 font-medium text-gray-400" style={{ fontFamily: 'var(--font-mono)' }}></th>
+                  <th className="border-x-2 border-t-2 border-[#E8631C] bg-[#E8631C]/10 p-4 font-semibold text-white">
+                    TradeTrust
+                  </th>
+                  <th className="bg-[#1B1E24] p-4 font-medium text-gray-300">Checkatrade</th>
+                  <th className="bg-[#1B1E24] p-4 font-medium text-gray-300">MyBuilder</th>
+                  <th className="bg-[#1B1E24] p-4 font-medium text-gray-300">Rated People</th>
+                </tr>
+              </thead>
+              <tbody style={{ fontFamily: 'var(--font-mono)' }}>
+                {[
+                  ['Monthly fee', 'Free (founding), £24.99 after', '£60\u2013150+/month', 'None', 'None (~£40/month optional)'],
+                  ['Per-lead cost', 'None', 'Often on top of membership', '~£15\u201340 per shortlist \u2014 win or lose', '~£5\u201330 per lead'],
+                  ['Contract length', 'None \u2014 leave anytime', 'Typically 12 months', 'None', 'None'],
+                  ['Who owns your reviews', 'You', 'The platform', 'The platform', 'The platform'],
+                  ['Competing trades per job', '1 \u2014 no bidding', '3\u20134 typically', '3\u20136 typically', '3\u20135 typically'],
+                ].map((row, i) => (
+                  <tr key={row[0]} className={i % 2 === 0 ? 'bg-[#14171B]' : 'bg-[#181B21]'}>
+                    <td className="p-4 font-medium text-gray-400">{row[0]}</td>
+                    <td className="border-x-2 border-[#E8631C] p-4 text-white">{row[1]}</td>
+                    <td className="p-4 text-gray-400">{row[2]}</td>
+                    <td className="p-4 text-gray-400">{row[3]}</td>
+                    <td className="p-4 text-gray-400">{row[4]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -249,6 +320,22 @@ export default function EarlyAccessPage() {
                   />
                 </label>
               </div>
+
+              {spots && (
+                <div
+                  className={`mt-5 flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium ${
+                    spots.remaining === 0
+                      ? 'border-[#14171B]/15 bg-[#14171B]/5 text-[#14171B]/70'
+                      : 'border-[#E8631C]/30 bg-[#E8631C]/10 text-[#b8500f]'
+                  }`}
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${spots.remaining === 0 ? 'bg-[#14171B]/40' : 'bg-[#E8631C]'}`} />
+                  {spots.remaining === 0
+                    ? `${form.trade} in ${form.coverage_area.trim()} is full for now — join to be notified if a spot opens.`
+                    : `Only ${spots.remaining} of ${spots.cap} ${form.trade.toLowerCase()} spots left in ${form.coverage_area.trim()}`}
+                </div>
+              )}
 
               {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 

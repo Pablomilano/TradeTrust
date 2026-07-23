@@ -282,6 +282,14 @@ export default function EarlyAccessPage() {
                       <option key={trade} value={trade}>{trade}</option>
                     ))}
                   </select>
+                  <a
+                    href="https://wa.me/447980800854?text=Hi%2C%20my%20trade%20isn%27t%20listed%20on%20the%20TradeTrust%20early%20access%20page%20%E2%80%94%20can%20I%20still%20join%3F"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-[#14171B]/50 underline decoration-[#14171B]/20 underline-offset-2 hover:text-[#E8631C]"
+                  >
+                    My trade isn&apos;t listed
+                  </a>
                 </label>
 
                 <label className="flex flex-col gap-2 text-sm text-[#14171B]">

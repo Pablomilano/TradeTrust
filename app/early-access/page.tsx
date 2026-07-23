@@ -23,14 +23,8 @@ export default function EarlyAccessPage() {
   const [spots, setSpots] = useState<{ taken: number; cap: number; remaining: number } | null>(null);
 
   useEffect(() => {
-    const area = form.coverage_area.trim();
-    if (area.length < 2) {
-      setSpots(null);
-      return;
-    }
-
     const timeout = setTimeout(() => {
-      const params = new URLSearchParams({ trade: form.trade, area });
+      const params = new URLSearchParams({ trade: form.trade });
       fetch(`/api/waitlist-count?${params.toString()}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {
@@ -41,10 +35,10 @@ export default function EarlyAccessPage() {
         .catch(() => {
           // A failed count shouldn't block the form — just skip showing it.
         });
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(timeout);
-  }, [form.trade, form.coverage_area]);
+  }, [form.trade]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -162,7 +156,7 @@ export default function EarlyAccessPage() {
                 </div>
               </div>
               <p className="mt-4 text-center text-[10px] uppercase tracking-[0.1em] text-[#14171B]/40" style={{ fontFamily: 'var(--font-mono)' }}>
-                Illustrative — 25 spots per trade, per area
+                Illustrative — 25 spots per trade
               </p>
             </div>
           </div>
@@ -332,8 +326,8 @@ export default function EarlyAccessPage() {
                 >
                   <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${spots.remaining === 0 ? 'bg-[#14171B]/40' : 'bg-[#E8631C]'}`} />
                   {spots.remaining === 0
-                    ? `${form.trade} in ${form.coverage_area.trim()} is full for now — join to be notified if a spot opens.`
-                    : `Only ${spots.remaining} of ${spots.cap} ${form.trade.toLowerCase()} spots left in ${form.coverage_area.trim()}`}
+                    ? `${form.trade} is full for now — join to be notified if a spot opens.`
+                    : `Only ${spots.remaining} of ${spots.cap} ${form.trade.toLowerCase()} spots left nationally`}
                 </div>
               )}
 

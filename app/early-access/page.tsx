@@ -133,18 +133,16 @@ export default function EarlyAccessPage() {
           <div className="flex justify-center lg:justify-end">
             <div className="w-full max-w-sm -rotate-2 rounded-xl border-2 border-dashed border-[#3a3e46] bg-[#F3ECDD] p-6 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] transition-transform hover:rotate-0">
               <div className="flex items-center justify-between border-b border-[#14171B]/15 pb-3">
-                <span className="text-sm font-black tracking-tight text-[#14171B]" style={{ fontFamily: 'var(--font-display)' }}>
-                  TradeTrust
-                </span>
+                <TradeTrustLogo variant="dark" />
                 <span className="text-[10px] uppercase tracking-[0.14em] text-[#14171B]/50" style={{ fontFamily: 'var(--font-mono)' }}>
-                  Member card
+                  VIP member card
                 </span>
               </div>
 
               <div className="mt-4 space-y-2.5 text-sm text-[#14171B]" style={{ fontFamily: 'var(--font-mono)' }}>
-                <div className="flex justify-between"><span className="text-[#14171B]/50">Trade</span><span className="font-medium">Plasterer</span></div>
-                <div className="flex justify-between"><span className="text-[#14171B]/50">Area</span><span className="font-medium">Widnes</span></div>
-                <div className="flex justify-between"><span className="text-[#14171B]/50">Member no.</span><span className="font-medium">014 / 25</span></div>
+                <div className="flex justify-between"><span className="text-[#14171B]/50">Trade</span><span className="font-medium">Electrician</span></div>
+                <div className="flex justify-between"><span className="text-[#14171B]/50">Area</span><span className="font-medium">Liverpool</span></div>
+                <div className="flex justify-between"><span className="text-[#14171B]/50">Member no.</span><span className="font-medium">01 / 25</span></div>
                 <div className="flex items-center justify-between">
                   <span className="text-[#14171B]/50">Status</span>
                   <span className="inline-flex items-center gap-1.5 font-medium text-[#1FA971]">
@@ -290,7 +288,7 @@ export default function EarlyAccessPage() {
                   <span className="text-xs font-medium uppercase tracking-[0.08em] text-[#14171B]/50" style={{ fontFamily: 'var(--font-mono)' }}>Coverage area</span>
                   <input
                     required
-                    placeholder="e.g. Widnes"
+                    placeholder="e.g. Liverpool"
                     value={form.coverage_area}
                     onChange={(e) => setForm({ ...form, coverage_area: e.target.value })}
                     className="rounded-xl border border-[#14171B]/15 bg-white px-4 py-3 text-sm text-[#14171B] outline-none focus:ring-2 focus:ring-[#E8631C]"

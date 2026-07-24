@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
 
-  // Best-effort notification — a failed email should never fail the signup itself.
+  // Best-effort notifications — a failed email should never fail the signup itself.
   const resendApiKey = process.env.RESEND_API_KEY;
   if (resendApiKey) {
     try {
@@ -58,6 +58,29 @@ export async function POST(request: Request) {
               <li><strong>Email:</strong> ${email}</li>
               <li><strong>Phone:</strong> ${phone || '—'}</li>
             </ul>
+          `,
+        }),
+      });
+    } catch {
+      // Signup already succeeded; the email is a nice-to-have, so swallow this.
+    }
+
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: 'TradeTrust <onboarding@resend.dev>',
+          to: [email],
+          subject: `You're on the TradeTrust early access list, ${name.split(' ')[0]}`,
+          html: `
+            <p>Hey ${name.split(' ')[0]},</p>
+            <p>Thanks for signing up to TradeTrust — wanted to be upfront: this is a new platform I'm building from scratch, not an established company. I'm pushing hard to get it market-ready so clients in ${coverage_area} can search the database and find a ${trade.toLowerCase()} directly.</p>
+            <p>You're in early as a founding member, which locks in your rate before it goes up to £24.99/month for everyone else later.</p>
+            <p>I'll keep you posted as we hit key milestones (search live, first client leads, etc). Appreciate you being early on this — feel free to reply with any thoughts on what you'd want from it as a working ${trade.toLowerCase()}.</p>
           `,
         }),
       });

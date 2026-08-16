@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../lib/useAuth';
 import TradeTrustLogo from '../../components/TradeTrustLogo';
+export const dynamic = 'force-dynamic'
 
 interface ProfileRow {
   id: string;
@@ -26,6 +27,16 @@ interface ReviewRow {
   created_at: string;
 }
 
+interface WaitlistRow {
+  id: string;
+  name: string;
+  trade: string;
+  coverage_area: string | null;
+  email: string;
+  phone: string | null;
+  created_at: string;
+}
+
 interface SummaryResponse {
   totals: {
     users: number;
@@ -33,12 +44,16 @@ interface SummaryResponse {
     enquiriesThisWeek: number;
     reviews: number;
     jobs: number;
+    waitlist: number;
+    waitlistThisWeek: number;
   };
   profiles: ProfileRow[];
   reviews: ReviewRow[];
+  waitlist: WaitlistRow[];
+  waitlistByTrade: { trade: string; count: number }[];
 }
 
-type Section = 'overview' | 'profiles' | 'reviews';
+type Section = 'overview' | 'waitlist' | 'profiles' | 'reviews';
 
 export default function AdminPage() {
   const { session, loading: authLoading } = useAuth();
@@ -47,6 +62,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const fetchSummary = async () => {
     if (!session) return;
@@ -74,6 +90,17 @@ export default function AdminPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, session]);
+
+  const handleCopyEmails = async () => {
+    if (!data) return;
+    try {
+      await navigator.clipboard.writeText(data.waitlist.map((w) => w.email).join(', '));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError('Could not copy to clipboard.');
+    }
+  };
 
   const handleDeleteProfile = async (profile: ProfileRow) => {
     if (!session) return;
@@ -148,6 +175,7 @@ export default function AdminPage() {
         <nav className="flex flex-col gap-1 px-3">
           {([
             { key: 'overview', label: 'Overview' },
+            { key: 'waitlist', label: 'Waitlist' },
             { key: 'profiles', label: 'Profiles' },
             { key: 'reviews', label: 'Reviews' },
           ] as { key: Section; label: string }[]).map((item) => (
@@ -172,8 +200,8 @@ export default function AdminPage() {
           <div className="flex items-center justify-between gap-4 sm:hidden">
             <p className="text-lg font-bold text-[#F8F5EE]">Admin</p>
           </div>
-          <div className="mt-2 flex gap-2 sm:hidden">
-            {(['overview', 'profiles', 'reviews'] as Section[]).map((key) => (
+          <div className="mt-2 flex flex-wrap gap-2 sm:hidden">
+            {(['overview', 'waitlist', 'profiles', 'reviews'] as Section[]).map((key) => (
               <button
                 key={key}
                 onClick={() => setSection(key)}
@@ -193,23 +221,95 @@ export default function AdminPage() {
           ) : data ? (
             <>
               {section === 'overview' && (
-                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
-                    <p className="text-sm text-muted">Users</p>
-                    <p className="mt-2 text-3xl font-bold text-text">{data.totals.users}</p>
+                <>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <button
+                      onClick={() => setSection('waitlist')}
+                      className="rounded-2xl border-2 border-[#E8631C] bg-white p-5 text-left shadow-card transition hover:bg-[#FFF6F0]"
+                    >
+                      <p className="text-sm text-muted">Waitlist</p>
+                      <p className="mt-2 text-3xl font-bold text-[#E8631C]">{data.totals.waitlist}</p>
+                      <p className="mt-1 text-xs text-muted">{data.totals.waitlistThisWeek} this week</p>
+                    </button>
+                    <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
+                      <p className="text-sm text-muted">Users</p>
+                      <p className="mt-2 text-3xl font-bold text-text">{data.totals.users}</p>
+                      <p className="mt-1 text-xs text-muted">full profiles</p>
+                    </div>
+                    <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
+                      <p className="text-sm text-muted">Enquiries</p>
+                      <p className="mt-2 text-3xl font-bold text-text">{data.totals.enquiriesThisWeek}</p>
+                      <p className="mt-1 text-xs text-muted">this week · {data.totals.enquiriesAllTime} all time</p>
+                    </div>
+                    <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
+                      <p className="text-sm text-muted">Reviews</p>
+                      <p className="mt-2 text-3xl font-bold text-text">{data.totals.reviews}</p>
+                    </div>
                   </div>
-                  <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
-                    <p className="text-sm text-muted">Enquiries</p>
-                    <p className="mt-2 text-3xl font-bold text-text">{data.totals.enquiriesThisWeek}</p>
-                    <p className="mt-1 text-xs text-muted">this week · {data.totals.enquiriesAllTime} all time</p>
+
+                  {data.waitlistByTrade.length > 0 && (
+                    <div className="mt-4 rounded-2xl border border-border bg-white p-5 shadow-card">
+                      <p className="text-sm font-semibold text-text">Signups by trade</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {data.waitlistByTrade.map((t) => (
+                          <span key={t.trade} className="rounded-full bg-[#F5F3EE] px-3 py-1.5 text-xs text-text">
+                            {t.trade} <span className="font-bold">{t.count}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {section === 'waitlist' && (
+                <div className="mt-6">
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm text-muted">
+                      {data.totals.waitlist} signup{data.totals.waitlist === 1 ? '' : 's'} · {data.totals.waitlistThisWeek} this week
+                    </p>
+                    {data.waitlist.length > 0 && (
+                      <button
+                        onClick={handleCopyEmails}
+                        className="rounded-full bg-[#14171B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#E8631C]"
+                      >
+                        {copied ? 'Copied' : 'Copy all emails'}
+                      </button>
+                    )}
                   </div>
-                  <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
-                    <p className="text-sm text-muted">Reviews</p>
-                    <p className="mt-2 text-3xl font-bold text-text">{data.totals.reviews}</p>
-                  </div>
-                  <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
-                    <p className="text-sm text-muted">Jobs</p>
-                    <p className="mt-2 text-3xl font-bold text-text">{data.totals.jobs}</p>
+                  <div className="overflow-x-auto rounded-2xl border border-border bg-white shadow-card">
+                    <table className="w-full min-w-[720px] text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-border text-xs uppercase tracking-wide text-muted">
+                          <th className="px-4 py-3 font-medium">Name</th>
+                          <th className="px-4 py-3 font-medium">Trade</th>
+                          <th className="px-4 py-3 font-medium">Area</th>
+                          <th className="px-4 py-3 font-medium">Email</th>
+                          <th className="px-4 py-3 font-medium">Phone</th>
+                          <th className="px-4 py-3 font-medium">Signed up</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.waitlist.length === 0 ? (
+                          <tr><td colSpan={6} className="px-4 py-6 text-center text-muted">No signups yet.</td></tr>
+                        ) : (
+                          data.waitlist.map((row) => (
+                            <tr key={row.id} className="border-b border-border last:border-0">
+                              <td className="px-4 py-3 font-medium text-text">{row.name}</td>
+                              <td className="px-4 py-3 text-muted">{row.trade}</td>
+                              <td className="px-4 py-3 text-muted">{row.coverage_area || '—'}</td>
+                              <td className="px-4 py-3">
+                                <a href={`mailto:${row.email}`} className="text-[#E8631C] hover:underline">{row.email}</a>
+                              </td>
+                              <td className="px-4 py-3 text-muted">
+                                {row.phone ? <a href={`tel:${row.phone}`} className="hover:underline">{row.phone}</a> : '—'}
+                              </td>
+                              <td className="px-4 py-3 text-muted">{formatDate(row.created_at)}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               )}

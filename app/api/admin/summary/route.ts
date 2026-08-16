@@ -22,6 +22,16 @@ interface ReviewRow {
   created_at: string;
 }
 
+interface WaitlistRow {
+  id: string;
+  name: string;
+  trade: string;
+  coverage_area: string | null;
+  email: string;
+  phone: string | null;
+  created_at: string;
+}
+
 function startOfWeekIso() {
   const now = new Date();
   const day = now.getDay();
@@ -41,7 +51,7 @@ export async function GET(request: NextRequest) {
 
   const { adminClient } = adminResult;
 
-  const [profilesRes, reviewsRes, enquiriesAllRes, enquiriesWeekRes, jobsRes] = await Promise.all([
+  const [profilesRes, reviewsRes, enquiriesAllRes, enquiriesWeekRes, jobsRes, waitlistRes] = await Promise.all([
     adminClient
       .from('profiles')
       .select('id, user_id, first_name, last_name, business_name, trade, coverage_area, visibility, created_at')
@@ -53,9 +63,20 @@ export async function GET(request: NextRequest) {
     adminClient.from('enquiries').select('id', { count: 'exact', head: true }),
     adminClient.from('enquiries').select('id', { count: 'exact', head: true }).gte('created_at', startOfWeekIso()),
     adminClient.from('jobs').select('id', { count: 'exact', head: true }),
+    adminClient
+      .from('waitlist_signups')
+      .select('id, name, trade, coverage_area, email, phone, created_at')
+      .order('created_at', { ascending: false }),
   ]);
 
-  if (profilesRes.error || reviewsRes.error || enquiriesAllRes.error || enquiriesWeekRes.error || jobsRes.error) {
+  if (
+    profilesRes.error ||
+    reviewsRes.error ||
+    enquiriesAllRes.error ||
+    enquiriesWeekRes.error ||
+    jobsRes.error ||
+    waitlistRes.error
+  ) {
     return NextResponse.json(
       {
         error:
@@ -64,6 +85,7 @@ export async function GET(request: NextRequest) {
           enquiriesAllRes.error?.message ||
           enquiriesWeekRes.error?.message ||
           jobsRes.error?.message ||
+          waitlistRes.error?.message ||
           'Failed to load admin summary.',
       },
       { status: 500 }
@@ -72,6 +94,20 @@ export async function GET(request: NextRequest) {
 
   const profiles = (profilesRes.data || []) as ProfileRow[];
   const reviews = (reviewsRes.data || []) as ReviewRow[];
+  const waitlist = (waitlistRes.data || []) as WaitlistRow[];
+
+  const weekStart = startOfWeekIso();
+  const waitlistThisWeek = waitlist.filter((w) => w.created_at >= weekStart).length;
+
+  // Signups grouped by trade, most popular first.
+  const waitlistByTrade = Object.entries(
+    waitlist.reduce<Record<string, number>>((acc, w) => {
+      acc[w.trade] = (acc[w.trade] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .map(([trade, count]) => ({ trade, count }))
+    .sort((a, b) => b.count - a.count);
 
   return NextResponse.json({
     totals: {
@@ -80,8 +116,12 @@ export async function GET(request: NextRequest) {
       enquiriesThisWeek: enquiriesWeekRes.count || 0,
       reviews: reviews.length,
       jobs: jobsRes.count || 0,
+      waitlist: waitlist.length,
+      waitlistThisWeek,
     },
     profiles,
     reviews,
+    waitlist,
+    waitlistByTrade,
   });
 }

@@ -69,12 +69,12 @@ export default function FindPage() {
           Verified · Real reviews · No commission
         </span>
 
-        <h1 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
+        <h1 className="mt-6 text-5xl font-bold leading-[0.98] tracking-[-0.02em] text-white sm:text-6xl lg:text-7xl">
           Find a tradesperson
           <br />
           you can <span className="text-[#E8631C]">actually trust</span>.
         </h1>
-        <p className="mt-4 max-w-lg text-sm leading-relaxed text-[#A8A49C] sm:text-base">
+        <p className="mt-4 max-w-lg text-base leading-relaxed text-[#A8A49C] sm:text-lg">
           Tell us where you are and what you need. Every trade on TradeTrust is verified, and the
           reviews come from real jobs.
         </p>

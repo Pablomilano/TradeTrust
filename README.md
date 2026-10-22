@@ -38,3 +38,24 @@ The schema includes:
 - `subscriptions`
 
 See `db/schema.sql` for a starting migration.
+
+## XAU/USD signal runner
+
+The optional standalone runner requests XAU/USD candles from Twelve Data for
+D1, H4, H1, and M15, analyzes only fully closed candles, and asks Claude for at
+most one long/short setup or NO TRADE. Code rejects setups with invalid stops,
+out-of-range risk, or less than 1.5:1 reward-to-risk at any target. Accepted
+signals and NO TRADE decisions are appended to `signals.jsonl`; accepted
+signals are sent to Telegram only when both Telegram variables are configured.
+The runner does not place trades.
+
+Set `TWELVE_DATA_API_KEY` and `ANTHROPIC_API_KEY` in your environment. To enable
+Telegram, also set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`. Run it from the
+repository root with:
+
+```bash
+node --env-file=.env.local scripts/xau-usd-signals.mjs
+```
+
+Schedule this command externally if periodic signals are desired. `signals.jsonl`
+is ignored by Git because it contains generated runtime data.

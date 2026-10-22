@@ -10,6 +10,7 @@ const BARS = {
 };
 
 function number(value) {
+  if (typeof value !== "number" && (typeof value !== "string" || value.trim() === "")) return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
 }
@@ -195,7 +196,7 @@ function parseModelResponse(text) {
   return JSON.parse(text.slice(start, end + 1));
 }
 
-function validateSetup(setup, analyses) {
+export function validateSetup(setup, analyses) {
   if (setup.decision === "NO TRADE") return { valid: false, reason: setup.why ?? "Model returned NO TRADE." };
   if (!["LONG", "SHORT"].includes(setup.decision)) return { valid: false, reason: "Invalid decision." };
 

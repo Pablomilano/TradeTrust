@@ -6,7 +6,8 @@
     "dev": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:signals": "node --test scripts/xau-usd-signals.test.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
